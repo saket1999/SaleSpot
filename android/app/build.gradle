@@ -50,7 +50,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-	    multiDexEnabled true
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -63,6 +63,8 @@ android {
     }
     buildTypes {
         release {
+            shrinkResources false
+            minifyEnabled false
             signingConfig signingConfigs.release
         }
     }

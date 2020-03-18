@@ -164,7 +164,8 @@ class _HomeState extends State<Home> {
 	Widget headerCategoryItem(String name,String iconUrl,String documentId) {
 		return GestureDetector(
 				onTap: () {
-					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user)));
+//					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user)));
+					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user,"visitPost")));
 				},
 				child: Container(
 					//color: Colors.lightBlueAccent,

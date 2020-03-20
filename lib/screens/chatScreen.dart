@@ -103,9 +103,12 @@ class _ChatScreenState extends State<ChatScreen> {
 					padding: EdgeInsets.all(4.0),
 					child: Column(
 						children: <Widget>[
-							Bubble(
-								color: Color.fromRGBO(212, 234, 244, 1.0),
-								child: Text(DateFormat('d MMM y').format(time.toDate()).toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0),),
+							Padding(
+							  padding: const EdgeInsets.only(bottom: 5.0),
+							  child: Bubble(
+							  	color: Color.fromRGBO(212, 234, 244, 1.0),
+							  	child: Text(DateFormat('d MMM y').format(time.toDate()).toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0),),
+							  ),
 							),
 							Bubble(
 								margin: snapshot.data.documents[index].data['isSeller'] ^ isSeller?BubbleEdges.only(right: 20.0):BubbleEdges.only(left: 20.0),
@@ -113,6 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
 								color: Color.fromRGBO(225, 255, 199, 1.0),
 								nip: index==snapshot.data.documents.length-1?(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop):(snapshot.data.documents[index].data['isSeller']==snapshot.data.documents[index+1].data['isSeller']?BubbleNip.no:(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop)),
 								child: RichText(
+									textAlign: TextAlign.end,
 									text: TextSpan(
 										style: DefaultTextStyle.of(context).style,
 										children: <TextSpan>[
@@ -151,6 +155,7 @@ class _ChatScreenState extends State<ChatScreen> {
 						color: Color.fromRGBO(225, 255, 199, 1.0),
 						nip: index==snapshot.data.documents.length-1?(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop):(snapshot.data.documents[index].data['isSeller']==snapshot.data.documents[index+1].data['isSeller']?BubbleNip.no:(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop)),
 						child: RichText(
+							textAlign: TextAlign.end,
 							text: TextSpan(
 								style: DefaultTextStyle.of(context).style,
 								children: <TextSpan>[
@@ -174,9 +179,12 @@ class _ChatScreenState extends State<ChatScreen> {
 					):
 					Column(
 						children: <Widget>[
-							Bubble(
-								color: Color.fromRGBO(212, 234, 244, 1.0),
-								child: Text(DateFormat('d MMM y').format(time.toDate()).toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0),),
+							Padding(
+							  padding: const EdgeInsets.only(bottom: 5.0),
+							  child: Bubble(
+							  	color: Color.fromRGBO(212, 234, 244, 1.0),
+							  	child: Text(DateFormat('d MMM y').format(time.toDate()).toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0),),
+							  ),
 							),
 							Bubble(
 								margin: snapshot.data.documents[index].data['isSeller'] ^ isSeller?BubbleEdges.only(right: 20.0):BubbleEdges.only(left: 20.0),
@@ -184,6 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
 								color: Color.fromRGBO(225, 255, 199, 1.0),
 								nip: index==snapshot.data.documents.length-1?(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop):(snapshot.data.documents[index].data['isSeller']==snapshot.data.documents[index+1].data['isSeller']?BubbleNip.no:(snapshot.data.documents[index].data['isSeller']^ isSeller?BubbleNip.leftTop:BubbleNip.rightTop)),
 								child: RichText(
+									textAlign: TextAlign.end,
 									text: TextSpan(
 										style: DefaultTextStyle.of(context).style,
 										children: <TextSpan>[

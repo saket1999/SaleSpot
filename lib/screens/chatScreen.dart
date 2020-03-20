@@ -7,20 +7,22 @@ import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 
 class ChatScreen extends StatefulWidget {
-	Product product;
-	String userDocumentID;
-	bool isSeller;
-	ChatScreen(this.product, this.userDocumentID, this.isSeller);
+	final Product product;
+	final String userDocumentID;
+	final bool isSeller;
+	final String sellerName,imageURL;
+	ChatScreen(this.product, this.userDocumentID, this.isSeller,this.sellerName,this.imageURL);
 
 	@override
-	_ChatScreenState createState() => _ChatScreenState(product, userDocumentID, isSeller);
+	_ChatScreenState createState() => _ChatScreenState(product, userDocumentID, isSeller, sellerName, imageURL);
 }
 
 class _ChatScreenState extends State<ChatScreen> {
 	Product product;
 	String userDocumentID;
 	bool isSeller;
-	_ChatScreenState(this.product, this.userDocumentID, this.isSeller);
+	final String sellerName,imageURL;
+	_ChatScreenState(this.product, this.userDocumentID, this.isSeller,this. sellerName, this.imageURL);
 
 	String chatId;
 
@@ -33,7 +35,25 @@ class _ChatScreenState extends State<ChatScreen> {
 	Widget build(BuildContext context) {
 		return Scaffold(
 			appBar: AppBar(
-				title: Text('Chat'),
+				title: Row(
+					children: <Widget>[
+						CircleAvatar(
+								radius: 20,
+								backgroundImage: NetworkImage(imageURL)
+						),
+						Padding(
+						  padding: const EdgeInsets.all(15.0),
+						  child: Column(
+								crossAxisAlignment: CrossAxisAlignment.start,
+						    children: <Widget>[
+						      Text(product.title),
+									Text(sellerName,style: TextStyle(fontSize: 13.0),)
+
+						    ],
+						  ),
+						)
+					],
+				),
 			),
 			body: Column(
 				children: <Widget>[

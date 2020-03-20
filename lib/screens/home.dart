@@ -144,15 +144,28 @@ class _HomeState extends State<Home> {
 										),
 
 									SliverToBoxAdapter(
-										child: ListTile(
-											leading: Icon(Icons.home),
-											title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
+										child: Container(
+											decoration: BoxDecoration(
+												color: Colors.white,
+												border: Border.all(color: Colors.grey,width: 0.3),
+												borderRadius: BorderRadius.all(
+														Radius.circular(10.0) //                 <--- border radius here
+												),
+
+											),
+											child:Padding(
+											  padding: const EdgeInsets.all(15.0),
+											  child: Text("Recommendation",textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.black54,fontWeight: FontWeight.w500),),
+											),
 
 										),
 
 									),
+									SliverPadding(
+										padding: EdgeInsets.only(top: 10.0),
+										sliver: _productList(),
+									),
 
-									_productList(),
 								]
 						)
 				),
@@ -185,7 +198,7 @@ class _HomeState extends State<Home> {
 //					color: Colors.lightBlueAccent,
 					decoration: BoxDecoration(
 						color: Colors.white,
-//						border: Border.all(color: Colors.white,width: 2.0),
+						border: Border.all(color: Colors.grey,width: 0.1),
 						borderRadius: BorderRadius.all(
 								Radius.circular(10.0) //                 <--- border radius here
 						),
@@ -300,7 +313,6 @@ class _HomeState extends State<Home> {
 								return Card(
 										elevation: 0.0,
 										child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
-
 								);
 							},
 						);
@@ -330,8 +342,9 @@ class _HomeState extends State<Home> {
 								)
 						);
 					return SliverGrid(
-						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 2.0,mainAxisSpacing: 2.0),
-						delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.75,crossAxisSpacing: 2.0,mainAxisSpacing: 2.0),
+
+							delegate: SliverChildBuilderDelegate((BuildContext context, int index){
 //							print(querySnapshots.data.documents.length.toString()+'  document');
 							DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
 							Product product=Product.fromMapObject(documentSnapshot.data);
@@ -359,23 +372,31 @@ class _HomeState extends State<Home> {
 														SizedBox(
 															height: screenWidth(context)/2,
 															child:networkImage(currUrl,screenHeight(context)/4),
-
+														),
+//														SizedBox(
+//															height: screenWidth(context)/10,
+//															child:Padding(
+//																padding: const EdgeInsets.symmetric(horizontal:15.0),
+//																child: Row(
+//																	crossAxisAlignment: CrossAxisAlignment.center,
+//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
+//																	mainAxisSize: MainAxisSize.min,
+//																	children: <Widget>[
+//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
+//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//																	],
+//																),
+//															),
+//														),
+														SizedBox(
+															height: screenWidth(context)/20,
+															child:autoSizeText(product.title, 1, 15.0, Colors.black87),
 														),
 														SizedBox(
-															height: screenWidth(context)/10,
-															child:Padding(
-																padding: const EdgeInsets.symmetric(horizontal:15.0),
-																child: Row(
-																	crossAxisAlignment: CrossAxisAlignment.center,
-																	mainAxisAlignment: MainAxisAlignment.spaceAround,
-																	mainAxisSize: MainAxisSize.min,
-																	children: <Widget>[
-																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-																	],
-																),
-															),
-														),
+															height: screenWidth(context)/20,
+															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+														)
+														
 
 													],
 												),

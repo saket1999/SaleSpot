@@ -225,7 +225,7 @@ class _MyProductListState extends State<myProductList>{
   }
 
   void soldProduct(Product ds) async {
-    Firestore.instance.collection('product').document(ds.productId).updateData({'soldFlag':'Sold'});
+    Firestore.instance.collection('product').document(ds.productId).updateData({'soldFlag':'1'});
   }
 
 

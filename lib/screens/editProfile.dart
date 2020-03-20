@@ -17,7 +17,7 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile>{
 
-   User _user;
+  User _user;
   _EditProfileState(this._user);
   final _formKey = GlobalKey<FormState>();
 
@@ -34,19 +34,24 @@ class _EditProfileState extends State<EditProfile>{
       onWillPop:(){
         Navigator.pop(context,_user);
         return Future.value(true);
-    },
-       child: Scaffold(
-         backgroundColor: Colors.blue[300],
-          body:SafeArea(
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  child:Column(
+      },
+      child: Scaffold(
+        backgroundColor: Colors.blue[300],
+        body:SafeArea(
+          child: Stack(
+            children: <Widget>[
+              ListView(
+//                  shrinkWrap: true,
+                children: <Widget>[
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      CircleAvatar(
-                        radius:screenHeight(context)/10 ,
-                        backgroundImage: NetworkImage(_user.photoUrl),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(0,screenHeight(context)/6,0,0),
+                        child: CircleAvatar(
+                          radius:screenHeight(context)/10 ,
+                          backgroundImage: NetworkImage(_user.photoUrl),
+                        ),
                       ),
                       Text(_user.name,
                         style: TextStyle(
@@ -57,7 +62,7 @@ class _EditProfileState extends State<EditProfile>{
                       ),
                       SizedBox(
                         height: 20,
-                        width: 200,
+                        width: screenWidth(context)/2,
                         child:Divider(
                           color: Colors.white,
                         ),
@@ -68,7 +73,7 @@ class _EditProfileState extends State<EditProfile>{
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(
-                              Radius.circular(5.0),
+                            Radius.circular(5.0),
 
                           ),
                         ),
@@ -81,9 +86,9 @@ class _EditProfileState extends State<EditProfile>{
                             Padding(
                               padding: const EdgeInsets.all(5.0),
                               child: Text(_user.mobile,
-                              style:TextStyle(
-                                fontSize: 20.0,
-                              ),),
+                                style:TextStyle(
+                                  fontSize: 20.0,
+                                ),),
                             ),
 
                           ],
@@ -147,27 +152,30 @@ class _EditProfileState extends State<EditProfile>{
                         onPressed: (){_showDialog();},
                       ),
                     ],
-                  )
-                ),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.close,
-                          color: Colors.white70,
-                          size:30
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          Navigator.pop(context,_user);
-                        });
-                      },
+                  ),
+
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.close,
+                        color: Colors.white70,
+                        size:30
                     ),
-                  ],
-                )
-              ],
-            ),
+                    onPressed: () {
+                      setState(() {
+                        Navigator.pop(context,_user);
+                      });
+                    },
+                  ),
+                ],
+              )
+
+            ],
           ),
-    ),
+        ),
+      ),
     );
   }
 
@@ -239,7 +247,7 @@ class _EditProfileState extends State<EditProfile>{
                             });
 
                             _updateDetails(_newPhoneNo,_newAddress);
-                            toast('update called');
+                            toast('In Process');
                           }
 
 
@@ -247,7 +255,7 @@ class _EditProfileState extends State<EditProfile>{
                     _isLoading?Padding(
                         padding:EdgeInsets.all(10.0),
                         child:CircularProgressIndicator()
-                        ):FlatButton(
+                    ):FlatButton(
                         child: const Text('CANCEL'),
                         onPressed: () {
                           Navigator.pop(context);
@@ -263,7 +271,7 @@ class _EditProfileState extends State<EditProfile>{
       },
     );
   }
-  
+
   Future _updateDetails(String _newPhoneNo,String _newAddress) async{
 
     await Firestore.instance.collection('user').document(_user.documentId).updateData({'mobile':_newPhoneNo,'address':_newAddress});
@@ -273,16 +281,17 @@ class _EditProfileState extends State<EditProfile>{
       _isLoading=false;
     });
     storeSharedPreferences();
+    toast('Update Done');
     Navigator.pop(context);
   }
 
-   void storeSharedPreferences() async {
-     final SharedPreferences prefs = await SharedPreferences.getInstance();
-     prefs.setString('storedObject', json.encode(_user.toMap()));
-     prefs.setString('storedId', _user.documentId);
-     prefs.setString('storePhoto', _user.photoUrl);
-   }
+  void storeSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('storedObject', json.encode(_user.toMap()));
+    prefs.setString('storedId', _user.documentId);
+    prefs.setString('storePhoto', _user.photoUrl);
+  }
 
 
-  
+
 }

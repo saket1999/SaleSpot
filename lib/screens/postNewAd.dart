@@ -134,6 +134,13 @@ class _PostNewAdState extends State<PostNewAd> {
       children: <Widget>[
         Row(
           children: <Widget>[
+            Text('Disclaimer: ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
+            Text('Advertisement will expire in 30 days',style: TextStyle(fontSize: 15.0),),
+          ],
+        ),
+        Container(height: 10.0,),
+        Row(
+          children: <Widget>[
             Text('Category: ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),
             Text(_category,style: TextStyle(fontSize: 20.0),),
           ],

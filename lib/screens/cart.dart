@@ -35,6 +35,7 @@ class _CartState extends State<Cart> {
 				appBar: AppBar(
 					title: Text('Cart'),
 					bottom: TabBar(
+						labelColor: Colors.white,
 						tabs: tabTitle
 					),
 				),

@@ -62,19 +62,19 @@ class _HomeState extends State<Home> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
-			backgroundColor: Colors.white,
+//			backgroundColor: Colors.white,
 			appBar: AppBar (
-				backgroundColor: Colors.cyan,
-				title: new Text("SaleSpot"),
-				centerTitle: true,
+//				backgroundColor: Colors.cyan,
+				title: new Text("Home"),
+//				centerTitle: true,
 
 			),
 			drawer: Drawer(
 				child: ListView(
 					children: <Widget>[
 						UserAccountsDrawerHeader(
-							accountEmail: Text(_user.email),
-							accountName: Text(_user.name),
+							accountEmail: Text(_user.email,style: TextStyle(color: Colors.white),),
+							accountName: Text(_user.name,style: TextStyle(color: Colors.white),),
 							currentAccountPicture: Container(
 //								child: Image.network(userDetails.photoUrl),
 								decoration: _user.photoUrl==null?BoxDecoration():BoxDecoration(
@@ -170,14 +170,14 @@ class _HomeState extends State<Home> {
 						)
 				),
 				floatingActionButton: FloatingActionButton(
-					backgroundColor: Colors.blue,
+//					backgroundColor: Colors.blue,
 					onPressed: () {
 //						Navigator.push(context,SlideBottomRoute( page:ChooseCategory( _user)));
 						Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
 
 
 					},
-					child: Icon(Icons.add),
+					child: Icon(Icons.add,color: Colors.white,),
 		),
 
 

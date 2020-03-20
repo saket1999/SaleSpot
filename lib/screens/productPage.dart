@@ -198,20 +198,24 @@ class _ProductPage extends State<ProductPage>{
     return StreamBuilder(
         stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').where("tag",arrayContains: _categoryName).orderBy(sortBy).snapshots(),
         builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
+
           if(!querySnapshots.hasData)
             return SliverList(
                 delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
-                  return Column(
-                    children: <Widget>[
-                      CircularProgressIndicator(),
-                    ],
+                  return Center(
+                    child: Column(
+                      children: <Widget>[
+//                      CircularProgressIndicator(),
+                        Text("No Product to show")
+                      ],
+                    ),
                   );
                 },
                   childCount:1,
                 )
             );
-          if(querySnapshots.data.documents.length==0)
-            return Center(child: CircularProgressIndicator());
+//          if(querySnapshots.data.documents.length==0)
+//            return Center(child: CircularProgressIndicator());
           return SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 1.0,mainAxisSpacing: 1.0),
             delegate: SliverChildBuilderDelegate((BuildContext context, int index){

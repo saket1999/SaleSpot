@@ -63,8 +63,11 @@ class _CartState extends State<Cart> {
 
 	Widget getList(AsyncSnapshot<QuerySnapshot> snapshot) {
 
+
 		var listView = ListView.builder(itemBuilder: (context, index) {
 			Product product;
+			String sellerName;
+			String imageURL;
 			if(index<snapshot.data.documents.length) {
 				return StreamBuilder<DocumentSnapshot> (
 					stream: Firestore.instance.collection('product').document(snapshot.data.documents[index].data['productId']).snapshots(),
@@ -98,19 +101,23 @@ class _CartState extends State<Cart> {
 													child: CircularProgressIndicator()
 												),
 											);
+										sellerName=sellerInfoSnapshot.data.data['name'];
 										return GestureDetector(
 											child: Card(
 												child: ListTile(
-													leading: Container(
-														width: MediaQuery.of(context).size.width*0.2,
-														child: FutureBuilder(
-															future: FirebaseStorage.instance.ref().child(product.productId+'1').getDownloadURL(),
-															builder: (BuildContext context, AsyncSnapshot<dynamic> downloadUrl) {
-																if(!downloadUrl.hasData)
-																	return networkImageWithoutHeightConstraint('https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
-																return networkImageWithoutHeightConstraint(downloadUrl.data);
-															},
-														),
+													leading: FutureBuilder(
+														future: FirebaseStorage.instance.ref().child(product.productId+'1').getDownloadURL(),
+														builder: (BuildContext context, AsyncSnapshot<dynamic> downloadUrl) {
+															if(!downloadUrl.hasData)
+																return networkImageWithoutHeightConstraint('https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
+
+															imageURL=downloadUrl.data;
+															return CircleAvatar(
+																	radius: 30,
+																	backgroundImage: NetworkImage(downloadUrl.data)
+															);
+//																return networkImageWithoutHeightConstraint(downloadUrl.data);
+														},
 													),
 													title: Text(product.title),
 													subtitle: Text(sellerInfoSnapshot.data.data['name']),
@@ -118,7 +125,7 @@ class _CartState extends State<Cart> {
 												),
 											),
 											onTap: () {
-												Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, _user.documentId, false)));
+												Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, _user.documentId, false,sellerName,imageURL)));
 											},
 										);
 									},
@@ -169,6 +176,9 @@ class _CartState extends State<Cart> {
 														return StreamBuilder<QuerySnapshot> (
 															stream: Firestore.instance.collection('product').document(product.productId).collection('chat').where('buyer', isEqualTo: userDocumentID).snapshots(),
 															builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> readSnapshot) {
+																String imageURL;
+																String buyerName;
+																buyerName=buyerInfoSnapshot.data.data['name'];
 																if(!readSnapshot.hasData)
 																	return Padding(
 																		padding: const EdgeInsets.all(8.0),
@@ -186,7 +196,12 @@ class _CartState extends State<Cart> {
 																					builder: (BuildContext context, AsyncSnapshot<dynamic> downloadUrl) {
 																						if(!downloadUrl.hasData)
 																							return networkImageWithoutHeightConstraint('https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
-																						return networkImageWithoutHeightConstraint(downloadUrl.data);
+																						imageURL=downloadUrl.data;
+																						return CircleAvatar(
+																								radius: 20,
+																								backgroundImage: NetworkImage(downloadUrl.data)
+																						);
+//																						return networkImageWithoutHeightConstraint(downloadUrl.data);
 																					},
 																				),
 																			),
@@ -196,7 +211,7 @@ class _CartState extends State<Cart> {
 																		),
 																	),
 																	onTap: () {
-																		Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, userDocumentID, true)));
+																		Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, userDocumentID, true,buyerName,imageURL)));
 																	},
 																);
 															},

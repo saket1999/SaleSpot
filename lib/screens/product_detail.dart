@@ -32,6 +32,7 @@ class _ProductDetailState extends State<ProductDetail> {
   bool cartNotAdded = false;
   bool myProduct=true;
   String sellerAddress="";
+  String sellerName;
 
   Future<dynamic> _imageLoader;//images are loaded only once
   
@@ -212,10 +213,11 @@ class _ProductDetailState extends State<ProductDetail> {
 
   Future imageLoader() async{
     var snapshot=await Firestore.instance.collection('product').document(_documentId).get();
-    var address=await Firestore.instance.collection('user').document(snapshot.data['sellerId']).get();
-    if(address!=null)
+    var seller=await Firestore.instance.collection('user').document(snapshot.data['sellerId']).get();
+    if(seller!=null)
       {
-        sellerAddress=address.data['address'];
+        sellerAddress=seller.data['address'];
+        sellerName=seller.data['name'];
 
       }
     _productContent=Product.fromMapObject(snapshot.data);
@@ -433,8 +435,12 @@ class _ProductDetailState extends State<ProductDetail> {
   void openChat() async {
     if(cartNotAdded == true)
       await addToCart();
-    if(_productContent != null)
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(_productContent, _user.documentId, false)));
+    if(_productContent != null && imagesUrl.isNotEmpty && sellerName.isNotEmpty) {
+//      var seller = await Firestore.instance.collection('user').document(_productContent.sellerId).get();
+      Navigator.push(context, MaterialPageRoute(builder: (context) =>
+          ChatScreen(
+              _productContent, _user.documentId, false, sellerName, imagesUrl[0])));
+    }
     else
       toast('Wait');
   }

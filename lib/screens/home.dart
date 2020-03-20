@@ -62,16 +62,19 @@ class _HomeState extends State<Home> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
-			backgroundColor: Colors.white,
-			appBar: AppBar(
-				title: Text('Home'),
+//			backgroundColor: Colors.white,
+			appBar: AppBar (
+//				backgroundColor: Colors.cyan,
+				title: new Text("Home"),
+//				centerTitle: true,
+
 			),
 			drawer: Drawer(
 				child: ListView(
 					children: <Widget>[
 						UserAccountsDrawerHeader(
-							accountEmail: Text(_user.email),
-							accountName: Text(_user.name),
+							accountEmail: Text(_user.email,style: TextStyle(color: Colors.white),),
+							accountName: Text(_user.name,style: TextStyle(color: Colors.white),),
 							currentAccountPicture: Container(
 //								child: Image.network(userDetails.photoUrl),
 								decoration: _user.photoUrl==null?BoxDecoration():BoxDecoration(
@@ -83,14 +86,7 @@ class _HomeState extends State<Home> {
 								),
 							),
 						),
-//						ListTile(
-//							leading: Icon(Icons.add),
-//							title: Text('Post Ad'),
-//							onTap: () {
-//								Navigator.pop(context);
-//								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory( _user)));
-//							},
-//						),
+
             ListTile(
               leading: Icon(Icons.assignment_turned_in),
               title: Text('My Products'),
@@ -130,27 +126,58 @@ class _HomeState extends State<Home> {
 				body:	Container(
 						height:screenHeight(context),
 						width:screenWidth(context),
-						color: Colors.grey[200],
+//						color: Colors.grey[200],
 						child:CustomScrollView(
 								slivers:<Widget>[
+									SliverToBoxAdapter(
+										child: ListTile(
+											leading: Icon(Icons.apps),
+												title:Text("Category",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
 
-									buildHeader('Categories'),
-									_categoryData(context),
-									buildHeader('Recommendations'),
-//									_productListView,
-									_productList(),
+											),
+
+									),
+
+										SliverPadding(
+												padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
+												sliver: _categoryData(context),
+										),
+
+									SliverToBoxAdapter(
+										child: Container(
+											decoration: BoxDecoration(
+												color: Colors.white,
+												border: Border.all(color: Colors.grey,width: 0.3),
+												borderRadius: BorderRadius.all(
+														Radius.circular(10.0) //                 <--- border radius here
+												),
+
+											),
+											child:Padding(
+											  padding: const EdgeInsets.all(15.0),
+											  child: Text("Recommendation",textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.black54,fontWeight: FontWeight.w500),),
+											),
+
+										),
+
+									),
+									SliverPadding(
+										padding: EdgeInsets.only(top: 10.0),
+										sliver: _productList(),
+									),
+
 								]
 						)
 				),
 				floatingActionButton: FloatingActionButton(
-					backgroundColor: Colors.blue,
+//					backgroundColor: Colors.blue,
 					onPressed: () {
 //						Navigator.push(context,SlideBottomRoute( page:ChooseCategory( _user)));
 						Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
 
 
 					},
-					child: Icon(Icons.add),
+					child: Icon(Icons.add,color: Colors.white,),
 		),
 
 
@@ -168,13 +195,16 @@ class _HomeState extends State<Home> {
 					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user,"visitPost")));
 				},
 				child: Container(
-					//color: Colors.lightBlueAccent,
+//					color: Colors.lightBlueAccent,
 					decoration: BoxDecoration(
-//						color: Colors.white,
-						border: Border.all(color: Colors.white,width: 2.0),
+						color: Colors.white,
+						border: Border.all(color: Colors.grey,width: 0.1),
 						borderRadius: BorderRadius.all(
-								Radius.circular(5.0) //                 <--- border radius here
+								Radius.circular(10.0) //                 <--- border radius here
 						),
+
+
+
 					),
 
 					child: Column(
@@ -182,16 +212,33 @@ class _HomeState extends State<Home> {
 						crossAxisAlignment: CrossAxisAlignment.center,
 						children: <Widget>[
 							SizedBox(
-								height: screenWidth(context)/5,
-								child:Container(
+								height: screenHeight(context)/20,
+								child:Center(
 //																	color:Colors.blueGrey,
 									child: networkImageWithoutHeightConstraint(iconUrl),
 								),
 
 							),
-							SizedBox(
-								height: screenWidth(context)/10,
-								child:autoSizeText(name),
+//					new Container(
+//							height: screenHeight(context)/20,
+//							width:screenHeight(context)/20 ,
+//							decoration: new BoxDecoration(
+//									shape: BoxShape.circle,
+//									image: new DecorationImage(
+//											fit: BoxFit.fill,
+//											image: new NetworkImage(
+//													iconUrl)
+//									)
+//							)),
+//						new Text("John Doe",
+//								textScaleFactor: 1.5),
+							Padding(
+							  padding: const EdgeInsets.only(top: 5.0),
+							  child: SizedBox(
+							  	height: screenHeight(context)/40,
+							  	child:autoSizeText(name),
+//								child:Expanded(child: autoSizeText(name, 1, 10.0, Colors.black87)),
+							  ),
 							),
 //							networkImageWithoutHeightConstraint(iconUrl),
 //							SizedBox(
@@ -242,7 +289,12 @@ class _HomeState extends State<Home> {
 				  }
 
 				return SliverGrid(
-					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3),
+//					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3),
+				gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+						maxCrossAxisExtent: 100.0,
+						mainAxisSpacing: 10.0,
+						crossAxisSpacing: 10.0,
+				),
 					delegate: SliverChildBuilderDelegate((BuildContext context, int index){
 						DocumentSnapshot ds = snapshot.data.documents[index];
 						//print(ds['iconId']);
@@ -259,9 +311,8 @@ class _HomeState extends State<Home> {
 										),
 									);
 								return Card(
-//										elevation: 10.0,
+										elevation: 0.0,
 										child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
-
 								);
 							},
 						);
@@ -274,8 +325,8 @@ class _HomeState extends State<Home> {
 
 	}
 
-		_productList(){
-			return StreamBuilder(
+	_productList(){
+		return StreamBuilder(
 				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').limit(10).snapshots(),
 				builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 					if(!querySnapshots.hasData)
@@ -291,96 +342,79 @@ class _HomeState extends State<Home> {
 								)
 						);
 					return SliverGrid(
-						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 1.0,mainAxisSpacing: 1.0),
-						delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-							print(querySnapshots.data.documents.length.toString()+'  document');
-						DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
-						Product product=Product.fromMapObject(documentSnapshot.data);
-						product.productId=documentSnapshot.documentID;
-						return FutureBuilder(
-								future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
-								builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
-									String currUrl=downloadUrl.data.toString();
-											if(!downloadUrl.hasData)
-													return Padding(
-													  padding: const EdgeInsets.all(20.0),
-													  child: Center(
-													  	child:CircularProgressIndicator()
-													  ),
-													);
-											return InkWell(
-												onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
-												child:new Card(
-													shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-													elevation: 0.3,
-													child: Column(
-														mainAxisSize: MainAxisSize.min,
-														mainAxisAlignment: MainAxisAlignment.center,
-														children: <Widget>[
-															SizedBox(
-																height: screenWidth(context)/2,
-																child:networkImage(currUrl,screenHeight(context)/4),
+						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.75,crossAxisSpacing: 2.0,mainAxisSpacing: 2.0),
 
-															),
-															SizedBox(
-																height: screenWidth(context)/10,
-																child:Padding(
-																	padding: const EdgeInsets.symmetric(horizontal:15.0),
-																	child: Row(
-																		crossAxisAlignment: CrossAxisAlignment.center,
-																		mainAxisAlignment: MainAxisAlignment.spaceAround,
-																		mainAxisSize: MainAxisSize.min,
-																		children: <Widget>[
-																			Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-																			autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-																		],
-																	),
-																),
-															),
-//															Padding(
-//															  padding: const EdgeInsets.all(8.0),
-//															  child: Hero(
-//															    tag: product.productId,
-//															    child: networkImage(currUrl,screenHeight(context)/4),
-//															  ),
-//															),
-//															Row(
-//																crossAxisAlignment: CrossAxisAlignment.center,
-//																mainAxisAlignment: MainAxisAlignment.spaceAround,
-//																mainAxisSize: MainAxisSize.min,
-//																children: <Widget>[
-////																			Text(
-////																				product.title[0].toUpperCase() + product.title.substring(1),
-////																				style: TextStyle(fontSize: 16.0, color: Colors.black87),
-////																			),
-//																	Expanded(child: autoSizeText(product.title, 1, 16.0, Colors.black87)),
-//
-////													SizedBox(
-////														width: 2.0,
-////													),
-//																	autoSizeText(rupee()+product.salePrice, 1, 16.0, Colors.black87),
-////																			SizedBox(
-////																				height: 2.0,
-////																			),
-//																],
-//															),
-														],
-													),
-
+							delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+//							print(querySnapshots.data.documents.length.toString()+'  document');
+							DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
+							Product product=Product.fromMapObject(documentSnapshot.data);
+							product.productId=documentSnapshot.documentID;
+							return FutureBuilder(
+									future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
+									builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
+										String currUrl=downloadUrl.data.toString();
+										if(!downloadUrl.hasData)
+											return Padding(
+												padding: const EdgeInsets.all(20.0),
+												child: Center(
+														child:CircularProgressIndicator()
 												),
 											);
-								}
-						);
+										return InkWell(
+											onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
+											child:new Card(
+												shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+												elevation: 0.3,
+												child: Column(
+													mainAxisSize: MainAxisSize.min,
+													mainAxisAlignment: MainAxisAlignment.center,
+													children: <Widget>[
+														SizedBox(
+															height: screenWidth(context)/2,
+															child:networkImage(currUrl,screenHeight(context)/4),
+														),
+//														SizedBox(
+//															height: screenWidth(context)/10,
+//															child:Padding(
+//																padding: const EdgeInsets.symmetric(horizontal:15.0),
+//																child: Row(
+//																	crossAxisAlignment: CrossAxisAlignment.center,
+//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
+//																	mainAxisSize: MainAxisSize.min,
+//																	children: <Widget>[
+//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
+//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//																	],
+//																),
+//															),
+//														),
+														SizedBox(
+															height: screenWidth(context)/20,
+															child:autoSizeText(product.title, 1, 15.0, Colors.black87),
+														),
+														SizedBox(
+															height: screenWidth(context)/20,
+															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+														)
+														
+
+													],
+												),
+
+											),
+										);
+									}
+							);
 
 
-					},
-						childCount: querySnapshots.hasData ? querySnapshots.data.documents.length : 0,),
+						},
+							childCount: querySnapshots.hasData ? querySnapshots.data.documents.length : 0,),
 
 					);
 				}
 
-			);
-		}
+		);
+	}
 
 		Widget buildHeader(String text){
 			return SliverList(

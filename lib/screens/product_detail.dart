@@ -435,7 +435,7 @@ class _ProductDetailState extends State<ProductDetail> {
   void openChat() async {
     if(cartNotAdded == true)
       await addToCart();
-    if(_productContent != null && imagesUrl.isNotEmpty && sellerName.isNotEmpty) {
+    if(_productContent != null && imagesUrl.isNotEmpty && sellerName!=null) {
 //      var seller = await Firestore.instance.collection('user').document(_productContent.sellerId).get();
       Navigator.push(context, MaterialPageRoute(builder: (context) =>
           ChatScreen(

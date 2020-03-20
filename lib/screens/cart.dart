@@ -125,7 +125,8 @@ class _CartState extends State<Cart> {
 												),
 											),
 											onTap: () {
-												Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, _user.documentId, false,sellerName,imageURL)));
+											  if(sellerName!=null && imageURL!=null)
+												  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, _user.documentId, false,sellerName,imageURL)));
 											},
 										);
 									},
@@ -211,7 +212,8 @@ class _CartState extends State<Cart> {
 																		),
 																	),
 																	onTap: () {
-																		Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, userDocumentID, true,buyerName,imageURL)));
+																	  if(buyerName!=null && imageURL!=null)
+																		  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, userDocumentID, true,buyerName,imageURL)));
 																	},
 																);
 															},

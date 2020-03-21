@@ -164,22 +164,27 @@ class _HomeState extends State<Home> {
 										child: Container(
 											decoration: BoxDecoration(
 												color: Colors.white,
-												border: Border.all(color: Colors.grey,width: 0.3),
+												border: Border.all(color: Colors.grey,width: 0.1),
 												borderRadius: BorderRadius.all(
 														Radius.circular(10.0) //                 <--- border radius here
 												),
 
 											),
 											child:Padding(
-											  padding: const EdgeInsets.all(15.0),
-											  child: Text("Recommendation",textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.black54,fontWeight: FontWeight.w500),),
+											  padding: EdgeInsets.symmetric(horizontal:0.0),
+												child: ListTile(
+													leading: Icon(Icons.home),
+													title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
+
+												),
 											),
 
 										),
 
 									),
+
 									SliverPadding(
-										padding: EdgeInsets.only(top: 10.0),
+										padding: EdgeInsets.only(top: 0.0),
 										sliver: _productList(),
 									),
 
@@ -236,32 +241,18 @@ class _HomeState extends State<Home> {
 								),
 
 							),
-//					new Container(
-//							height: screenHeight(context)/20,
-//							width:screenHeight(context)/20 ,
-//							decoration: new BoxDecoration(
-//									shape: BoxShape.circle,
-//									image: new DecorationImage(
-//											fit: BoxFit.fill,
-//											image: new NetworkImage(
-//													iconUrl)
-//									)
-//							)),
-//						new Text("John Doe",
-//								textScaleFactor: 1.5),
+//
 							Padding(
-							  padding: const EdgeInsets.only(top: 5.0),
+							  padding: EdgeInsets.only(top: 5.0),
 							  child: SizedBox(
-							  	height: screenHeight(context)/40,
-							  	child:autoSizeText(name),
+							  	height: screenHeight(context)/30,
+//							  	child:Text("Study Material1",maxLines:3),
+//									child:Text(name,maxLines:3),
+//										child: autoSizeText("Study Material1233333333333333", 2)
+										child: autoSizeText(name, 2)
 //								child:Expanded(child: autoSizeText(name, 1, 10.0, Colors.black87)),
 							  ),
 							),
-//							networkImageWithoutHeightConstraint(iconUrl),
-//							SizedBox(
-//								height: 10,
-//							),
-//							autoSizeText(name)
 						],
 					),
 				)
@@ -308,6 +299,7 @@ class _HomeState extends State<Home> {
 				return SliverGrid(
 //					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3),
 				gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+					childAspectRatio: 0.9,
 						maxCrossAxisExtent: 100.0,
 						mainAxisSpacing: 10.0,
 						crossAxisSpacing: 10.0,

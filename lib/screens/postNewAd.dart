@@ -88,6 +88,9 @@ class _PostNewAdState extends State<PostNewAd> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.black)),
                   color: Colors.black,
                   textColor: Colors.white,
                   child:Icon(Icons.camera),
@@ -95,6 +98,9 @@ class _PostNewAdState extends State<PostNewAd> {
                 ),
                 Container(width: 20.0,),
                 RaisedButton(
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.black)),
                   color: Colors.black,
                   textColor: Colors.white,
                   child:Icon(Icons.photo_library),
@@ -132,6 +138,13 @@ class _PostNewAdState extends State<PostNewAd> {
 
     _categorySubcategory=Column(
       children: <Widget>[
+        Row(
+          children: <Widget>[
+            Text('Disclaimer: ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15.0),),
+            Text('Advertisement will expire in 30 days',style: TextStyle(fontSize: 15.0),),
+          ],
+        ),
+        Container(height: 10.0,),
         Row(
           children: <Widget>[
             Text('Category: ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),),
@@ -439,6 +452,10 @@ class _PostNewAdState extends State<PostNewAd> {
                 Row(
                   children: <Widget>[
                     RaisedButton(
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.black)),
+
                       color: Colors.black,
                       textColor: Colors.white,
                       child:_isUploading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Submit'),

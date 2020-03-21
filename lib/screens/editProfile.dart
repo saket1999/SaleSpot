@@ -36,7 +36,7 @@ class _EditProfileState extends State<EditProfile>{
         return Future.value(true);
       },
       child: Scaffold(
-        backgroundColor: Colors.blue[300],
+        backgroundColor: Colors.cyan,
         body:SafeArea(
           child: Stack(
             children: <Widget>[
@@ -55,7 +55,7 @@ class _EditProfileState extends State<EditProfile>{
                       ),
                       Text(_user.name,
                         style: TextStyle(
-                          fontSize: 48.0,
+                          fontSize: 30.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),

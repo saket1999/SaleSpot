@@ -96,6 +96,8 @@ class _MyProductListState extends State<myProductList>{
   }
 
   listProduct(String currUrl,Product ds,bool soldFlag){
+
+    bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
     return Card(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,40 +131,63 @@ class _MyProductListState extends State<myProductList>{
               ),
             ),
           ),
-          soldFlag?Container():Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                GestureDetector(
-                  onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user,ds.productId.toString())));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(Icons.edit),
+          soldFlag?Container():(renewFlag?
+    Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: RaisedButton(
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18.0),
+      side: BorderSide(color: Colors.amberAccent,width: 2.0)
+      ),
+      color: Colors.white,
+      textColor: Colors.white,
+      child:Row(
+        children: <Widget>[
+          Text('Renew',style: TextStyle(color: Colors.amberAccent),),
+          Icon(Icons.check,color: Colors.amberAccent,),
+        ],
+      ),
+      onPressed: (){renewProduct(ds);},
+      ),
+    ):
+          Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GestureDetector(
+                    onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user,ds.productId.toString())));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Icon(Icons.edit),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: (){return deleteDialog(context,ds);},
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(Icons.delete),
+                  GestureDetector(
+                    onTap: (){return deleteDialog(context,ds);},
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Icon(Icons.delete),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap:(){return soldDialog(context,ds);},
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Icon(Icons.check),
+                  GestureDetector(
+                    onTap:(){return soldDialog(context,ds);},
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Icon(Icons.check),
+                    ),
                   ),
-                ),
-              ],
-            )
-          )
+                ],
+              )
+          ))
         ],
       ),
     );
   }
 
+  renewProduct(Product product){
+    Firestore.instance.collection('product').document(product.productId).updateData({'date':Timestamp.now().toDate().toString()});
+
+  }
   deleteDialog(BuildContext context,Product product) async {
     return showDialog<void>(
       context: context,

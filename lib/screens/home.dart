@@ -117,7 +117,7 @@ class _HomeState extends State<Home> {
 							},
 						),
 						ListTile(
-							leading: Icon(Icons.person),
+							leading: Icon(Icons.assignment),
 							title: Text('Feedback'),
 							onTap: () {
 								Navigator.pop(context);
@@ -125,7 +125,7 @@ class _HomeState extends State<Home> {
 							},
 						),
 						ListTile(
-							leading: Icon(Icons.person),
+							leading: Icon(Icons.question_answer),
 							title: Text('FAQ'),
 							onTap: () {
 								Navigator.pop(context);

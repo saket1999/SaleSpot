@@ -19,7 +19,7 @@ class Faq extends StatelessWidget {
   	List<String> answer=[
   		'Yes, you have reached the correct screen.',
   		'The app is completely free of cost.',
-			'Its not good if you think so.'
+			'It\'s not good if you think so.'
 					'Anyways every advertisement you list is checked before becoming public.',
 			'Just click the image icon of the product in the cart.',
 			'Only the promotional section of the application contains Ads.',

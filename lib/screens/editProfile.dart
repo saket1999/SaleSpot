@@ -146,8 +146,11 @@ class _EditProfileState extends State<EditProfile>{
 
                       ),
                       RaisedButton(
+                        shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.black)),
                         color: Colors.white,
-                        textColor: Colors.black,
+//                        textColor: Colors.black,
                         child:Text("Update Details"),
                         onPressed: (){_showDialog();},
                       ),

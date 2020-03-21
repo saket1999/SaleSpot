@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,9 +42,12 @@ class _HomeState extends State<Home> {
 	FirebaseMessaging _fcm = FirebaseMessaging();
 
 	String token;
+	Timer timer;
+	var connectivityResult;
 
 	void initState() {
 		super.initState();
+		timer = Timer.periodic(Duration(seconds: 5), (Timer t) => checkConnectivity());
 		checkForBlock();
 		storeSharedPreferences();
 		_fcm.configure(
@@ -112,7 +117,7 @@ class _HomeState extends State<Home> {
 							},
 						),
 						ListTile(
-							leading: Icon(Icons.person),
+							leading: Icon(Icons.assignment),
 							title: Text('Feedback'),
 							onTap: () {
 								Navigator.pop(context);
@@ -120,7 +125,7 @@ class _HomeState extends State<Home> {
 							},
 						),
 						ListTile(
-							leading: Icon(Icons.person),
+							leading: Icon(Icons.question_answer),
 							title: Text('FAQ'),
 							onTap: () {
 								Navigator.pop(context);
@@ -501,6 +506,44 @@ class _HomeState extends State<Home> {
 			Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Login()), (Route<dynamic> route) => false);
 		}
 		}
+
+	void checkConnectivity() async {
+		connectivityResult = await (Connectivity().checkConnectivity());
+		if(connectivityResult == ConnectivityResult.none) {
+			connectivityWarning();
+			print('no connectivity--------------');
+		}
+		else
+			print('connected----------------');
+	}
+
+	Future<void> connectivityWarning() async {
+		return showDialog(
+			context: context,
+			barrierDismissible: false,
+			builder: (context) {
+				Future.delayed(Duration(seconds: 5), () {
+					Navigator.of(context).pop(true);
+				});
+				return AlertDialog(
+					title: Column(
+						children: <Widget>[
+							Icon(
+								Icons.error,
+								size: 40.0,
+							),
+							Padding(
+								padding: EdgeInsets.all(10.0),
+							),
+							Text(
+								'No Internet Connection'
+							)
+						],
+					)
+				);
+			}
+		);
+	}
 
 
 

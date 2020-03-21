@@ -18,7 +18,8 @@ import 'package:sale_spot/screens/subCategory.dart';
 import 'package:sale_spot/services/slideTransition.dart';
 import 'package:sale_spot/services/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'faq.dart';
+import 'feedback.dart';
 import 'myProductList.dart';
 import 'login.dart';
 
@@ -108,6 +109,22 @@ class _HomeState extends State<Home> {
 							title: Text('Profile'),
 							onTap: () {
 								_openProfilePage(context);
+							},
+						),
+						ListTile(
+							leading: Icon(Icons.person),
+							title: Text('Feedback'),
+							onTap: () {
+								Navigator.pop(context);
+								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>FeedBack(_user)));
+							},
+						),
+						ListTile(
+							leading: Icon(Icons.person),
+							title: Text('FAQ'),
+							onTap: () {
+								Navigator.pop(context);
+								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Faq()));
 							},
 						),
 						ListTile(

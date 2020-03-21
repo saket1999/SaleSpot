@@ -25,13 +25,15 @@ class Faq extends StatelessWidget {
 		  padding: const EdgeInsets.all(10.0),
 		  child: ListView.builder(
 		  	itemBuilder: (BuildContext context, int index) {
-		  		return ExpansionTile(
-		  			title: Text(question[index]),
-		  			children: <Widget>[
-		  				ListTile(
+		  		return Card(
+		  		  child: ExpansionTile(
+		  		  	title: Text(question[index]),
+		  		  	children: <Widget>[
+		  		  		ListTile(
 							title: Text(answer[index]),
 						)
-		  			],
+		  		  	],
+		  		  ),
 		  		);
 		  	},
 		  	itemCount: question.length,

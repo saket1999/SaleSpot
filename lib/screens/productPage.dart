@@ -232,78 +232,47 @@ class _ProductPage extends State<ProductPage>{
                               child:CircularProgressIndicator()
                           )
                       );
-                    return SizedBox(
-                      height:screenHeight(context)/8,
-                      child:InkWell(
-                        onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
-                        child:new Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-                          elevation: 0.3,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              SizedBox(
-                                height: screenWidth(context)/2,
-                                child:Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                                  child: networkImage(currUrl,screenHeight(context)/4),
-                                ),
+                    return InkWell(
+                      onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
+                      child:new Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                        elevation: 0.3,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              height: screenWidth(context)/2,
+                              child:networkImage(currUrl,screenHeight(context)/4),
+                            ),
+//														SizedBox(
+//															height: screenWidth(context)/10,
+//															child:Padding(
+//																padding: const EdgeInsets.symmetric(horizontal:15.0),
+//																child: Row(
+//																	crossAxisAlignment: CrossAxisAlignment.center,
+//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
+//																	mainAxisSize: MainAxisSize.min,
+//																	children: <Widget>[
+//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
+//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//																	],
+//																),
+//															),
+//														),
+                            SizedBox(
+                              height: screenWidth(context)/20,
+                              child:autoSizeText(product.title, 1, 15.0, Colors.black87),
+                            ),
+                            SizedBox(
+                              height: screenWidth(context)/20,
+                              child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+                            )
 
-                              ),
-                              SizedBox(
-                                height: screenWidth(context)/10,
-                                child:Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal:15.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-                                      autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-                                    ],
-                                  ),
-                                ),
-                              ),
 
-//                              new Container(
-//                                padding: const EdgeInsets.all(8.0),
-//                                child: Image.network(
-//                                    currUrl,
-//                                    height:screenHeight(context)/4
-//
-//                                ),
-//                              ),
-//                              new Container(
-//                                margin: EdgeInsets.only(left: 15,),
-//
-//                                child: Row(
-//                                  crossAxisAlignment: CrossAxisAlignment.center,
-//                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                  mainAxisSize: MainAxisSize.max,
-//                                  children: <Widget>[
-//                                    Text(
-//                                      product.title[0].toUpperCase() + product.title.substring(1),
-//                                      style: TextStyle(fontSize: 16.0, color: Colors.black87),
-//                                    ),
-////													SizedBox(
-////														width: 2.0,
-////													),
-//                                    Text(rupee()+product.salePrice,
-//                                      style: TextStyle(
-//                                          color: Colors.grey[800],
-//                                          fontSize: 15),
-//                                    ),
-//                                    SizedBox(
-//                                      height: 2.0,
-//                                    ),
-//                                  ],
-//                                ),
-//                              )
-                            ],
-                          ),
-
+                          ],
                         ),
+
                       ),
                     );
                   }

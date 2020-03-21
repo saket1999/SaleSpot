@@ -99,11 +99,13 @@ class _MyProductListState extends State<myProductList>{
 
     bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
     return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 0.5,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
-              padding: const EdgeInsets.all(5.0),
+              padding:EdgeInsets.all(8.0),
               width:screenWidth(context)/3,
               child: networkImage(currUrl, screenWidth(context)/3),
 //              child: Image.network(currUrl,height: screenWidth(context)/3,)
@@ -112,17 +114,17 @@ class _MyProductListState extends State<myProductList>{
             child: GestureDetector(
               onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(ds.productId.toString(), _user)));},
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: autoSizeText(ds.title, 2, 20.0, Colors.black87)
+                      padding: EdgeInsets.only(bottom:4.0),
+                      child: autoSizeText(ds.title, 2, 18.0, Colors.black87)
 //                      child: Text(ds.title,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.only(bottom:4.0),
                       child: autoSizeText(rupee()+ds.salePrice, 1, 20.0, Colors.black87)
 //                      child: Text(rupee()+ds.salePrice,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
                     ),
@@ -135,24 +137,25 @@ class _MyProductListState extends State<myProductList>{
     Padding(
       padding: const EdgeInsets.all(8.0),
       child: RaisedButton(
-      shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(18.0),
-      side: BorderSide(color: Colors.amberAccent,width: 2.0)
-      ),
-      color: Colors.white,
-      textColor: Colors.white,
-      child:Row(
-        children: <Widget>[
-          Text('Renew',style: TextStyle(color: Colors.amberAccent),),
-          Icon(Icons.check,color: Colors.amberAccent,),
-        ],
-      ),
-      onPressed: (){renewProduct(ds);},
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18.0),
+          side: BorderSide(color: Colors.amberAccent,width: 2.0)
+        ),
+        color: Colors.white,
+        textColor: Colors.white,
+        child:Row(
+          children: <Widget>[
+            Text('Renew',style: TextStyle(color: Colors.amberAccent),),
+            Icon(Icons.check,color: Colors.amberAccent,),
+          ],
+        ),
+        onPressed: (){renewProduct(ds);},
       ),
     ):
           Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   GestureDetector(
                     onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user,ds.productId.toString())));

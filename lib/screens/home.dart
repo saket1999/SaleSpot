@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,13 +41,8 @@ class _HomeState extends State<Home> {
 
 	String token;
 
-
-	Timer timer;
-	var connectivityResult;
-
 	void initState() {
 		super.initState();
-		timer = Timer.periodic(Duration(seconds: 5), (Timer t) => checkConnectivity());
 		checkForBlock();
 		storeSharedPreferences();
 		_fcm.configure(
@@ -95,14 +88,14 @@ class _HomeState extends State<Home> {
 							),
 						),
 
-						ListTile(
-							leading: Icon(Icons.assignment_turned_in),
-							title: Text('My Products'),
-							onTap: () {
+            ListTile(
+              leading: Icon(Icons.assignment_turned_in),
+              title: Text('My Products'),
+              onTap: () {
 								Navigator.pop(context);
-								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>myProductList( _user)));
-							},
-						),
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>myProductList( _user)));
+              },
+            ),
 						ListTile(
 							leading: Icon(Icons.shopping_cart),
 							title: Text('Cart'),
@@ -147,62 +140,67 @@ class _HomeState extends State<Home> {
 					],
 				),
 			),
-			body:	Container(
-				height:screenHeight(context),
-				width:screenWidth(context),
+				body:	Container(
+						height:screenHeight(context),
+						width:screenWidth(context),
 //						color: Colors.grey[200],
-				child:CustomScrollView(
-					slivers:<Widget>[
-						SliverToBoxAdapter(
-							child: ListTile(
-								leading: Icon(Icons.apps),
-								title:Text("Category",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
+						child:CustomScrollView(
+								slivers:<Widget>[
+									SliverToBoxAdapter(
+										child: ListTile(
+											leading: Icon(Icons.apps),
+												title:Text("Category",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
 
-							),
+											),
 
-						),
-
-						SliverPadding(
-							padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
-							sliver: _categoryData(context),
-						),
-
-						SliverToBoxAdapter(
-							child: Container(
-								decoration: BoxDecoration(
-									color: Colors.white,
-									border: Border.all(color: Colors.grey,width: 0.3),
-									borderRadius: BorderRadius.all(
-										Radius.circular(10.0) //                 <--- border radius here
 									),
 
-								),
-								child:Padding(
-									padding: const EdgeInsets.all(15.0),
-									child: Text("Recommendation",textAlign: TextAlign.center,style: TextStyle(fontSize: 18,color: Colors.black54,fontWeight: FontWeight.w500),),
-								),
+										SliverPadding(
+												padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
+												sliver: _categoryData(context),
+										),
 
-							),
+									SliverToBoxAdapter(
+										child: Container(
+											decoration: BoxDecoration(
+												color: Colors.white,
+												border: Border.all(color: Colors.grey,width: 0.1),
+												borderRadius: BorderRadius.all(
+														Radius.circular(10.0) //                 <--- border radius here
+												),
 
-						),
-						SliverPadding(
-							padding: EdgeInsets.only(top: 10.0),
-							sliver: _productList(),
-						),
+											),
+											child:Padding(
+											  padding: EdgeInsets.symmetric(horizontal:0.0),
+												child: ListTile(
+													leading: Icon(Icons.home),
+													title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
 
-					]
-				)
-			),
-			floatingActionButton: FloatingActionButton(
+												),
+											),
+
+										),
+
+									),
+
+									SliverPadding(
+										padding: EdgeInsets.only(top: 0.0),
+										sliver: _productList(),
+									),
+
+								]
+						)
+				),
+				floatingActionButton: FloatingActionButton(
 //					backgroundColor: Colors.blue,
-				onPressed: () {
+					onPressed: () {
 //						Navigator.push(context,SlideBottomRoute( page:ChooseCategory( _user)));
-					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
+						Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
 
 
-				},
-				child: Icon(Icons.add,color: Colors.white,),
-			),
+					},
+					child: Icon(Icons.add,color: Colors.white,),
+		),
 
 
 
@@ -214,64 +212,50 @@ class _HomeState extends State<Home> {
 	}
 	Widget headerCategoryItem(String name,String iconUrl,String documentId) {
 		return GestureDetector(
-			onTap: () {
+				onTap: () {
 //					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user)));
-				Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user,"visitPost")));
-			},
-			child: Container(
+					Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>SubCategory(documentId,name, _user,"visitPost")));
+				},
+				child: Container(
 //					color: Colors.lightBlueAccent,
-				decoration: BoxDecoration(
-					color: Colors.white,
-					border: Border.all(color: Colors.grey,width: 0.1),
-					borderRadius: BorderRadius.all(
-						Radius.circular(10.0) //                 <--- border radius here
+					decoration: BoxDecoration(
+						color: Colors.white,
+						border: Border.all(color: Colors.grey,width: 0.1),
+						borderRadius: BorderRadius.all(
+								Radius.circular(10.0) //                 <--- border radius here
+						),
+
+
+
 					),
 
-
-
-				),
-
-				child: Column(
-					mainAxisAlignment: MainAxisAlignment.center,
-					crossAxisAlignment: CrossAxisAlignment.center,
-					children: <Widget>[
-						SizedBox(
-							height: screenHeight(context)/20,
-							child:Center(
+					child: Column(
+						mainAxisAlignment: MainAxisAlignment.center,
+						crossAxisAlignment: CrossAxisAlignment.center,
+						children: <Widget>[
+							SizedBox(
+								height: screenHeight(context)/20,
+								child:Center(
 //																	color:Colors.blueGrey,
-								child: networkImageWithoutHeightConstraint(iconUrl),
-							),
+									child: networkImageWithoutHeightConstraint(iconUrl),
+								),
 
-						),
-//					new Container(
-//							height: screenHeight(context)/20,
-//							width:screenHeight(context)/20 ,
-//							decoration: new BoxDecoration(
-//									shape: BoxShape.circle,
-//									image: new DecorationImage(
-//											fit: BoxFit.fill,
-//											image: new NetworkImage(
-//													iconUrl)
-//									)
-//							)),
-//						new Text("John Doe",
-//								textScaleFactor: 1.5),
-						Padding(
-							padding: const EdgeInsets.only(top: 5.0),
-							child: SizedBox(
-								height: screenHeight(context)/40,
-								child:autoSizeText(name),
-//								child:Expanded(child: autoSizeText(name, 1, 10.0, Colors.black87)),
 							),
-						),
-//							networkImageWithoutHeightConstraint(iconUrl),
-//							SizedBox(
-//								height: 10,
-//							),
-//							autoSizeText(name)
-					],
-				),
-			)
+//
+							Padding(
+							  padding: EdgeInsets.only(top: 5.0),
+							  child: SizedBox(
+							  	height: screenHeight(context)/30,
+//							  	child:Text("Study Material1",maxLines:3),
+//									child:Text(name,maxLines:3),
+//										child: autoSizeText("Study Material1233333333333333", 2)
+										child: autoSizeText(name, 2)
+//								child:Expanded(child: autoSizeText(name, 1, 10.0, Colors.black87)),
+							  ),
+							),
+						],
+					),
+				)
 
 		);
 	}
@@ -296,9 +280,9 @@ class _HomeState extends State<Home> {
 			stream: Firestore.instance.collection('category').snapshots(),
 			builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> snapshot) {
 				//print(snapshot.data);
-				if(!snapshot.hasData) {
-					return SliverList(
-						delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
+				  if(!snapshot.hasData) {
+				    return SliverList(
+							delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
 							return Column(
 								children: <Widget>[
 									CircularProgressIndicator(),
@@ -307,18 +291,19 @@ class _HomeState extends State<Home> {
 							);
 
 						},
-							childCount:1,
+								childCount:1,
 						)
-					);
-				}
+						);
+				  }
 
 				return SliverGrid(
 //					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3),
-					gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+				gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+					childAspectRatio: 0.9,
 						maxCrossAxisExtent: 100.0,
 						mainAxisSpacing: 10.0,
 						crossAxisSpacing: 10.0,
-					),
+				),
 					delegate: SliverChildBuilderDelegate((BuildContext context, int index){
 						DocumentSnapshot ds = snapshot.data.documents[index];
 						//print(ds['iconId']);
@@ -331,12 +316,12 @@ class _HomeState extends State<Home> {
 									return Padding(
 										padding: const EdgeInsets.all(8.0),
 										child: Center(
-											child: CircularProgressIndicator()
+												child: CircularProgressIndicator()
 										),
 									);
 								return Card(
-									elevation: 0.0,
-									child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
+										elevation: 0.0,
+										child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
 								);
 							},
 						);
@@ -351,52 +336,52 @@ class _HomeState extends State<Home> {
 
 	_productList(){
 		return StreamBuilder(
-			stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').limit(10).snapshots(),
-			builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
-				if(!querySnapshots.hasData)
-					return SliverList(
-						delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
-							return Column(
-								children: <Widget>[
-									CircularProgressIndicator(),
-								],
-							);
-						},
-							childCount:1,
-						)
-					);
-				return SliverGrid(
-					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.75,crossAxisSpacing: 2.0,mainAxisSpacing: 2.0),
-
-					delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-//							print(querySnapshots.data.documents.length.toString()+'  document');
-						DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
-						Product product=Product.fromMapObject(documentSnapshot.data);
-						product.productId=documentSnapshot.documentID;
-						return FutureBuilder(
-							future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
-							builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
-								String currUrl=downloadUrl.data.toString();
-								if(!downloadUrl.hasData)
-									return Padding(
-										padding: const EdgeInsets.all(20.0),
-										child: Center(
-											child:CircularProgressIndicator()
-										),
+				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').limit(10).snapshots(),
+				builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
+					if(!querySnapshots.hasData)
+						return SliverList(
+								delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
+									return Column(
+										children: <Widget>[
+											CircularProgressIndicator(),
+										],
 									);
-								return InkWell(
-									onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
-									child:new Card(
-										shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-										elevation: 0.3,
-										child: Column(
-											mainAxisSize: MainAxisSize.min,
-											mainAxisAlignment: MainAxisAlignment.center,
-											children: <Widget>[
-												SizedBox(
-													height: screenWidth(context)/2,
-													child:networkImage(currUrl,screenHeight(context)/4),
+								},
+									childCount:1,
+								)
+						);
+					return SliverGrid(
+						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.75,crossAxisSpacing: 2.0,mainAxisSpacing: 2.0),
+
+							delegate: SliverChildBuilderDelegate((BuildContext context, int index){
+//							print(querySnapshots.data.documents.length.toString()+'  document');
+							DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
+							Product product=Product.fromMapObject(documentSnapshot.data);
+							product.productId=documentSnapshot.documentID;
+							return FutureBuilder(
+									future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
+									builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
+										String currUrl=downloadUrl.data.toString();
+										if(!downloadUrl.hasData)
+											return Padding(
+												padding: const EdgeInsets.all(20.0),
+												child: Center(
+														child:CircularProgressIndicator()
 												),
+											);
+										return InkWell(
+											onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
+											child:new Card(
+												shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+												elevation: 0.3,
+												child: Column(
+													mainAxisSize: MainAxisSize.min,
+													mainAxisAlignment: MainAxisAlignment.center,
+													children: <Widget>[
+														SizedBox(
+															height: screenWidth(context)/2,
+															child:networkImage(currUrl,screenHeight(context)/4),
+														),
 //														SizedBox(
 //															height: screenWidth(context)/10,
 //															child:Padding(
@@ -412,105 +397,67 @@ class _HomeState extends State<Home> {
 //																),
 //															),
 //														),
-												SizedBox(
-													height: screenWidth(context)/20,
-													child:autoSizeText(product.title, 1, 15.0, Colors.black87),
+														SizedBox(
+															height: screenWidth(context)/20,
+															child:autoSizeText(product.title, 1, 15.0, Colors.black87),
+														),
+														SizedBox(
+															height: screenWidth(context)/20,
+															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+														)
+														
+
+													],
 												),
-												SizedBox(
-													height: screenWidth(context)/20,
-													child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-												)
+
+											),
+										);
+									}
+							);
 
 
-											],
-										),
+						},
+							childCount: querySnapshots.hasData ? querySnapshots.data.documents.length : 0,),
 
-									),
-								);
-							}
-						);
-
-
-					},
-						childCount: querySnapshots.hasData ? querySnapshots.data.documents.length : 0,),
-
-				);
-			}
+					);
+				}
 
 		);
 	}
 
-	Widget buildHeader(String text){
-		return SliverList(
-			delegate: SliverChildListDelegate([Container(
-				margin: EdgeInsets.all(5),
-				padding: EdgeInsets.all(15),
-				decoration: BoxDecoration(
+		Widget buildHeader(String text){
+			return SliverList(
+				delegate: SliverChildListDelegate([Container(
+					margin: EdgeInsets.all(5),
+					padding: EdgeInsets.all(15),
+					decoration: BoxDecoration(
 //															border: Border.all(color: Colors.grey,width: 0.5),
-					color: Colors.white,
-					borderRadius: BorderRadius.all(
-						Radius.circular(10.0) //                 <--- border radius here
+						color: Colors.white,
+						borderRadius: BorderRadius.all(
+								Radius.circular(10.0) //                 <--- border radius here
+						),
 					),
+
+					child: Text(text,style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
+				)]
 				),
+			);
 
-				child: Text(text,style: TextStyle(fontSize: 18,color: Colors.black,fontWeight: FontWeight.bold),),
-			)]
-			),
-		);
+		}
 
-	}
+		void getToken() async {
+			token = await _fcm.getToken();
+			Firestore.instance.collection('user').document(_user.documentId).updateData({'token': token});
+		}
 
-	void getToken() async {
-		token = await _fcm.getToken();
-		Firestore.instance.collection('user').document(_user.documentId).updateData({'token': token});
-	}
-
-	void checkForBlock() async {
+		void checkForBlock() async {
 		var newData = await Firestore.instance.collection('user').document(_user.documentId).get();
 		if(newData.data['blockedNo'] > 2) {
 			_googleSignIn.signOut();
 			clearSharedPrefs();
 			Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Login()), (Route<dynamic> route) => false);
 		}
-	}
-
-	void checkConnectivity() async {
-		connectivityResult = await (Connectivity().checkConnectivity());
-		if(connectivityResult == ConnectivityResult.none) {
-			connectivityWarning();
-			print('no connectivity--------------');
 		}
-		else
-			print('connected----------------');
-	}
-
-	Future<void> connectivityWarning() async {
-		return showDialog(
-			context: context,
-			barrierDismissible: false,
-			builder: (context) {
-				Future.delayed(Duration(seconds: 5), () {
-					Navigator.of(context).pop(true);
-				});
-				return AlertDialog(
-					title: Column(
-						children: <Widget>[
-							Icon(
-								Icons.error,
-								size: 40.0,
-							),
-							Padding(
-								padding: EdgeInsets.all(10.0),
-							),
-							Text(
-								'No Internet Connection'
-							)
-						],
-					)
-				);
-			}
-		);
-	}
 
 
 //	getProductData() async {

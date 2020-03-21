@@ -222,6 +222,20 @@ class _ProductPage extends State<ProductPage>{
               DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
               Product product=Product.fromMapObject(documentSnapshot.data);
               product.productId=documentSnapshot.documentID;
+              double salePrice=double.parse(product.salePrice);
+              double originalPrice=double.parse(product.originalPrice);
+              double discount;
+              String discountPercentage;
+              String originalPriceText;
+              if(originalPrice!=0){
+                originalPriceText=rupee()+product.originalPrice;
+                discount=1-(salePrice/originalPrice);
+                discountPercentage=(discount*100).round().toString()+'% off';
+              }
+              else{
+                originalPriceText='';
+                discountPercentage='';
+              }
               return FutureBuilder(
                   future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
                   builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
@@ -241,9 +255,12 @@ class _ProductPage extends State<ProductPage>{
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            SizedBox(
-                              height: screenWidth(context)/2,
-                              child:networkImage(currUrl,screenHeight(context)/4),
+                            Padding(
+                              padding: EdgeInsets.only(bottom:8.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: networkImage(currUrl,screenHeight(context)/5),
+                              ),
                             ),
 //														SizedBox(
 //															height: screenWidth(context)/10,
@@ -264,10 +281,42 @@ class _ProductPage extends State<ProductPage>{
                               height: screenWidth(context)/20,
                               child:autoSizeText(product.title, 1, 15.0, Colors.black87),
                             ),
-                            SizedBox(
-                              height: screenWidth(context)/20,
-                              child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-                            )
+//														SizedBox(
+//															height: screenWidth(context)/20,
+//															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//														),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  rupee()+product.salePrice,
+                                  style: TextStyle(fontSize: 18.0, color: Colors.black87),
+                                ),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+                                Text(
+                                  originalPriceText,
+                                  style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Colors.grey,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 8.0,
+                                ),
+
+                                Text(
+                                  discountPercentage,
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+
+                              ],
+                            ),
 
 
                           ],

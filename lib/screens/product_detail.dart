@@ -262,7 +262,7 @@ class _ProductDetailState extends State<ProductDetail> {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Text(
           "Ratings",
-          style: TextStyle(fontSize: 20.0, color: Colors.black,fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
         ),
       );
     return Container();
@@ -292,8 +292,8 @@ class _ProductDetailState extends State<ProductDetail> {
         children: <Widget>[
 
           Text(
-            "Details",
-            style: TextStyle(fontSize: 20.0, color: Colors.black,fontWeight: FontWeight.w600),
+            "Product Description",
+            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
           ),
           SizedBox(height: 10.0),
           Padding(
@@ -318,7 +318,7 @@ class _ProductDetailState extends State<ProductDetail> {
         child: Text(
           //name,
           _productContent.title,
-          style: TextStyle(fontSize: 18.0, color: Colors.black),
+          style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight:FontWeight.w500),
         ),
 
 
@@ -349,7 +349,7 @@ class _ProductDetailState extends State<ProductDetail> {
         children: <Widget>[
           Text(
             salePriceText,
-            style: TextStyle(fontSize: 26.0, color: Colors.black,fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 25.0, color: Colors.black,fontWeight: FontWeight.w600),
           ),
           SizedBox(
             width: 8.0,
@@ -357,7 +357,7 @@ class _ProductDetailState extends State<ProductDetail> {
           Text(
             originalPriceText,
             style: TextStyle(
-              fontSize: 12.0,
+              fontSize: 19.0,
               color: Colors.grey,
               decoration: TextDecoration.lineThrough,
             ),
@@ -368,7 +368,7 @@ class _ProductDetailState extends State<ProductDetail> {
           Text(
             discountPercentage,
             style: TextStyle(
-              fontSize: 12.0,
+              fontSize: 18.0,
               color: Colors.green[700],
             ),
           ),

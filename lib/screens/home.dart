@@ -161,24 +161,13 @@ class _HomeState extends State<Home> {
 										),
 
 									SliverToBoxAdapter(
-										child: Container(
-											decoration: BoxDecoration(
-												color: Colors.white,
-												border: Border.all(color: Colors.grey,width: 0.1),
-												borderRadius: BorderRadius.all(
-														Radius.circular(10.0) //                 <--- border radius here
-												),
+										child: Padding(
+										  padding: EdgeInsets.symmetric(horizontal:0.0),
+											child: ListTile(
+												leading: Icon(Icons.home),
+												title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
 
 											),
-											child:Padding(
-											  padding: EdgeInsets.symmetric(horizontal:0.0),
-												child: ListTile(
-													leading: Icon(Icons.home),
-													title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
-
-												),
-											),
-
 										),
 
 									),
@@ -199,7 +188,11 @@ class _HomeState extends State<Home> {
 
 
 					},
-					child: Icon(Icons.add,color: Colors.white,),
+//					child: Icon(Icons.add,color: Colors.white,),
+						child: Text("SELL",style: TextStyle(
+							fontSize: 15.0,
+							color: Colors.white,
+						),),
 		),
 
 
@@ -358,6 +351,21 @@ class _HomeState extends State<Home> {
 							DocumentSnapshot documentSnapshot=querySnapshots.data.documents[index];
 							Product product=Product.fromMapObject(documentSnapshot.data);
 							product.productId=documentSnapshot.documentID;
+							double salePrice=double.parse(product.salePrice);
+							double originalPrice=double.parse(product.originalPrice);
+							double discount;
+							String discountPercentage;
+							String originalPriceText;
+							if(originalPrice!=0){
+								originalPriceText=rupee()+product.originalPrice;
+								discount=1-(salePrice/originalPrice);
+								discountPercentage=(discount*100).round().toString()+'% off';
+							}
+							else{
+								originalPriceText='';
+								discountPercentage='';
+							}
+
 							return FutureBuilder(
 									future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
 									builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
@@ -378,9 +386,12 @@ class _HomeState extends State<Home> {
 													mainAxisSize: MainAxisSize.min,
 													mainAxisAlignment: MainAxisAlignment.center,
 													children: <Widget>[
-														SizedBox(
-															height: screenWidth(context)/2,
-															child:networkImage(currUrl,screenHeight(context)/4),
+														Padding(
+														  padding: EdgeInsets.only(bottom:8.0),
+														  child: ClipRRect(
+														  	borderRadius: BorderRadius.circular(8.0),
+														    child: networkImage(currUrl,screenHeight(context)/5),
+														  ),
 														),
 //														SizedBox(
 //															height: screenWidth(context)/10,
@@ -401,10 +412,42 @@ class _HomeState extends State<Home> {
 															height: screenWidth(context)/20,
 															child:autoSizeText(product.title, 1, 15.0, Colors.black87),
 														),
-														SizedBox(
-															height: screenWidth(context)/20,
-															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-														)
+//														SizedBox(
+//															height: screenWidth(context)/20,
+//															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//														),
+														Row(
+														mainAxisAlignment: MainAxisAlignment.center,
+														children: <Widget>[
+															Text(
+															rupee()+product.salePrice,
+																style: TextStyle(fontSize: 18.0, color: Colors.black87),
+															),
+															SizedBox(
+																width: 8.0,
+															),
+															Text(
+																originalPriceText,
+																style: TextStyle(
+																	fontSize: 15.0,
+																	color: Colors.grey,
+																	decoration: TextDecoration.lineThrough,
+																),
+															),
+															SizedBox(
+																width: 8.0,
+															),
+
+															Text(
+															discountPercentage,
+																style: TextStyle(
+																	fontSize: 12.0,
+																	color: Colors.green[700],
+																),
+															),
+
+														],
+													),
 														
 
 													],
@@ -460,88 +503,7 @@ class _HomeState extends State<Home> {
 		}
 
 
-//	getProductData() async {
-//
-//		QuerySnapshot snapshot=await Firestore.instance.collection('product').orderBy('date').limit(20).getDocuments();
-//		List<String> urls=<String>[];
-//
-//		for(int i=0;i<snapshot.documents.length;i++) {
-//			var s=await FirebaseStorage.instance.ref().child(snapshot.documents[i].documentID+"1").getDownloadURL();
-//			if(s!=null) {
-//				urls.add(s.toString());
-//
-//				//print(s.toString());
-//			}
-//		}
-//
-//		_productListView=SliverGrid (
-//
-//			gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 1.0,mainAxisSpacing: 1.0),
-//			delegate: SliverChildBuilderDelegate((BuildContext context, int index){
-//				DocumentSnapshot ds = snapshot.documents[index];
-//				String currUrl=urls[index];
-//				return SizedBox(
-//					height:screenHeight(context)/8,
-//						child:InkWell(
-//							onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(snapshot.documents[index].documentID.toString(), _user))); },
-//							child:new Card(
-//								shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-//								elevation: 0.3,
-//								child: Column(
-//									mainAxisSize: MainAxisSize.min,
-//									children: <Widget>[
-//										new Container(
-//											padding: const EdgeInsets.all(8.0),
-//											child: Hero(
-//												tag: ds.documentID,
-//												child: Image.network(
-//														currUrl,
-//														height:screenHeight(context)/4
-//
-//												),
-//											),
-//										),
-//										new Container(
-//											margin: EdgeInsets.only(left: 15,),
-//
-//											child: Row(
-//												crossAxisAlignment: CrossAxisAlignment.center,
-//												mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//												mainAxisSize: MainAxisSize.max,
-//												children: <Widget>[
-//													Text(
-//														ds['title'][0].toUpperCase() + ds['title'].substring(1),
-//														style: TextStyle(fontSize: 16.0, color: Colors.black87),
-//													),
-////													SizedBox(
-////														width: 2.0,
-////													),
-//													Text(rupee()+ds['salePrice'],
-//														style: TextStyle(
-//																color: Colors.grey[800],
-//																fontSize: 15),
-//													),
-//													SizedBox(
-//														height: 2.0,
-//													),
-//												],
-//											),
-//										)
-//									],
-//								),
-//
-//							),
-//						),
-//				);
-//			},
-//				childCount: snapshot.documents.length,
-//			),
-//		);
-//
-//		setState(() {
-//
-//		});
-//		}
+
 
 
 

@@ -16,6 +16,7 @@ import 'package:sale_spot/screens/cart.dart';
 import 'package:sale_spot/screens/chooseCategory.dart';
 import 'package:sale_spot/screens/editProfile.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/screens/promote.dart';
 import 'package:sale_spot/screens/subCategory.dart';
 import 'package:sale_spot/services/slideTransition.dart';
 import 'package:sale_spot/services/toast.dart';
@@ -109,6 +110,14 @@ class _HomeState extends State<Home> {
 								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
 							},
 						),
+            ListTile(
+              leading: Icon(Icons.call_made),
+              title: Text('Promote'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Promote(_user)));
+              },
+            ),
 						ListTile(
 							leading: Icon(Icons.person),
 							title: Text('Profile'),
@@ -341,7 +350,7 @@ class _HomeState extends State<Home> {
 
 	_productList(){
 		return StreamBuilder(
-				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').limit(10).snapshots(),
+				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').orderBy('priority',descending: true).limit(10).snapshots(),
 				builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 					if(!querySnapshots.hasData)
 						return SliverList(

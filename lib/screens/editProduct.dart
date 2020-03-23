@@ -17,11 +17,12 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 
 class EditProduct extends StatefulWidget {
-  final String _documentId;
+//  final String _documentId;
   final User _user;
-  EditProduct(this._user,this._documentId);
+  final Product _product;
+  EditProduct(this._user,this._product);
   @override
-  _EditProductState createState() => _EditProductState(_user,_documentId);
+  _EditProductState createState() => _EditProductState(_user,_product);
 }
 
 class _EditProductState extends State<EditProduct> {
@@ -29,7 +30,8 @@ class _EditProductState extends State<EditProduct> {
   String _documentId;
 //  String _subCategory;
   final User _user;
-  _EditProductState(this._user,this._documentId);
+  Product _product;
+  _EditProductState(this._user,this._product);
 
   List<Widget> _productImageSlides;
   Widget _productImageSlider;
@@ -56,7 +58,6 @@ class _EditProductState extends State<EditProduct> {
   List<File> _images=[];
   int _currIndex=0;
   int _prevIndex=0;
-  Product _product;
   bool _isUploading=false;
   bool _isLoading=true;
 
@@ -98,6 +99,9 @@ class _EditProductState extends State<EditProduct> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.black)),
                   color: Colors.black,
                   textColor: Colors.white,
                   child:Icon(Icons.camera),
@@ -105,6 +109,9 @@ class _EditProductState extends State<EditProduct> {
                 ),
                 Container(width: 20.0,),
                 RaisedButton(
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.black)),
                   color: Colors.black,
                   textColor: Colors.white,
                   child:Icon(Icons.photo_library),
@@ -455,6 +462,9 @@ class _EditProductState extends State<EditProduct> {
                 Row(
                   children: <Widget>[
                     RaisedButton(
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.black)),
                       color: Colors.black,
                       textColor: Colors.white,
                       child:_isUploading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Submit'),
@@ -523,7 +533,8 @@ class _EditProductState extends State<EditProduct> {
     setState(() {
       _isUploading=false;
     });
-    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+//    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+    Navigator.pop(context);
     toast('Ad sent for verification');
   }
 
@@ -604,6 +615,9 @@ class _EditProductState extends State<EditProduct> {
               child: Image.file(_images.last),
             ),
             RaisedButton(
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.black)),
               color: Colors.white,
               child: Icon(Icons.delete),
               onPressed: (){
@@ -628,9 +642,9 @@ class _EditProductState extends State<EditProduct> {
       Navigator.pop(context);
       return;
     }
-    var snapshot= await Firestore.instance.collection('product').document(_documentId).get();
-    _product=Product.fromMapObject(snapshot.data);
-    _product.productId=snapshot.documentID;
+//    var snapshot= await Firestore.instance.collection('product').document(_documentId).get();
+//    _product=Product.fromMapObject(snapshot.data);
+//    _product.productId=snapshot.documentID;
     if(_product.waitingFlag=='1'){
       toast('Post not yet verified');
       Navigator.pop(context);

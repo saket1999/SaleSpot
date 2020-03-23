@@ -469,7 +469,7 @@ class _PostNewAdState extends State<PostNewAd> {
                           _isUploading=true;
                         });
                         _product=Product();
-                        _product.priority='0';
+                        _product.priority=0;
                         _product.tag=List<String>();
                         _product.partName=List<String>();
                         _product.partValue=List<String>();

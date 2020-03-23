@@ -158,7 +158,7 @@ class _MyProductListState extends State<myProductList>{
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   GestureDetector(
-                    onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user,ds.productId.toString())));
+                    onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user, ds)));
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),

@@ -25,6 +25,21 @@ class _PromoteState extends State<Promote> {
 
   String productDocID='';
   bool _isLoading=false;
+
+  Map<int, Color> color =
+  {
+    50:Color.fromRGBO(136,14,79, .1),
+    100:Color.fromRGBO(136,14,79, .2),
+    200:Color.fromRGBO(136,14,79, .3),
+    300:Color.fromRGBO(136,14,79, .4),
+    400:Color.fromRGBO(136,14,79, .5),
+    500:Color.fromRGBO(136,14,79, .6),
+    600:Color.fromRGBO(136,14,79, .7),
+    700:Color.fromRGBO(136,14,79, .8),
+    800:Color.fromRGBO(136,14,79, .9),
+    900:Color.fromRGBO(136,14,79, 1),
+  };
+
   RewardedVideoAd videoAd = RewardedVideoAd.instance;
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
@@ -144,15 +159,19 @@ class _PromoteState extends State<Promote> {
   }
 
   listProduct(String currUrl,Product ds){
+    print(MaterialColor(ds.priority,color));
 
 //    bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      color: MaterialColor((ds.priority*1000)+1000000000,color),
       elevation: 0.5,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+
           Container(
+
             padding:EdgeInsets.all(8.0),
             width:screenWidth(context)/3,
             child: networkImage(currUrl, screenWidth(context)/3),
@@ -186,13 +205,13 @@ class _PromoteState extends State<Promote> {
             child: RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Colors.amberAccent,width: 2.0)
+                  side: BorderSide(color: Colors.black,width: 2.0)
               ),
-              color: Colors.black,
+              color: Colors.white,
 //              textColor: Colors.white,
               child:Row(
                 children: <Widget>[
-                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Promote',style: TextStyle(color: Colors.cyanAccent),),
+                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Promote',style: TextStyle(color: Colors.black),),
                 ],
               ),
               onPressed: (){productDocID=ds.productId;loadVideo();},

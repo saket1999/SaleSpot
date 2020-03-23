@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
@@ -476,39 +477,14 @@ class _HomeState extends State<Home> {
 	void checkConnectivity() async {
 		connectivityResult = await (Connectivity().checkConnectivity());
 		if(connectivityResult == ConnectivityResult.none) {
-			connectivityWarning();
-			print('no connectivity--------------');
+			Fluttertoast.showToast(
+				msg: 'No Internet Connectivity',
+				backgroundColor: Colors.black,
+				textColor: Colors.white,
+				gravity: ToastGravity.CENTER,
+				toastLength: Toast.LENGTH_SHORT,
+			);
 		}
-		else
-			print('connected----------------');
-	}
-
-	Future<void> connectivityWarning() async {
-		return showDialog(
-			context: context,
-			barrierDismissible: false,
-			builder: (context) {
-				Future.delayed(Duration(seconds: 5), () {
-					Navigator.of(context).pop(true);
-				});
-				return AlertDialog(
-					title: Column(
-						children: <Widget>[
-							Icon(
-								Icons.error,
-								size: 40.0,
-							),
-							Padding(
-								padding: EdgeInsets.all(10.0),
-							),
-							Text(
-								'No Internet Connection'
-							)
-						],
-					)
-				);
-			}
-		);
 	}
 
 

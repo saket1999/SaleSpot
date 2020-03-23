@@ -33,10 +33,32 @@ class _PromoteState extends State<Promote> {
     nonPersonalizedAds: false,
   );
 
+  BannerAd myBanner = BannerAd(
+    // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+    // https://developers.google.com/admob/android/test-ads
+    // https://developers.google.com/admob/ios/test-ads
+    adUnitId: BannerAd.testAdUnitId,
+    size: AdSize.smartBanner,
+    targetingInfo: targetingInfo,
+    listener: (MobileAdEvent event) {
+      print("BannerAd event is $event");
+    },
+  );
+
   @override
   void initState() {
     super.initState();
+
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+
+    //to display Banner Ad
+    myBanner
+      ..load()
+      ..show(
+        anchorType: AnchorType.bottom,
+      );
+
+    //to display Video Ad
     videoAd.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       print("REWARDED VIDEO AD $event");
@@ -170,7 +192,7 @@ class _PromoteState extends State<Promote> {
 //              textColor: Colors.white,
               child:Row(
                 children: <Widget>[
-                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Promote',style: TextStyle(color: Colors.greenAccent),),
+                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Promote',style: TextStyle(color: Colors.cyanAccent),),
                 ],
               ),
               onPressed: (){productDocID=ds.productId;loadVideo();},
@@ -196,5 +218,10 @@ class _PromoteState extends State<Promote> {
 
   void showVideo(){
     videoAd.show();
+  }
+  @override
+  void dispose(){
+    myBanner.dispose();
+    super.dispose();
   }
 }

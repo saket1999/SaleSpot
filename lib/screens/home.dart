@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
@@ -16,6 +17,7 @@ import 'package:sale_spot/screens/cart.dart';
 import 'package:sale_spot/screens/chooseCategory.dart';
 import 'package:sale_spot/screens/editProfile.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/screens/promote.dart';
 import 'package:sale_spot/screens/subCategory.dart';
 import 'package:sale_spot/services/slideTransition.dart';
 import 'package:sale_spot/services/toast.dart';
@@ -109,6 +111,14 @@ class _HomeState extends State<Home> {
 								Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
 							},
 						),
+            ListTile(
+              leading: Icon(Icons.call_made),
+              title: Text('Promote'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Promote(_user)));
+              },
+            ),
 						ListTile(
 							leading: Icon(Icons.person),
 							title: Text('Profile'),
@@ -334,7 +344,7 @@ class _HomeState extends State<Home> {
 
 	_productList(){
 		return StreamBuilder(
-				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').limit(10).snapshots(),
+				stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').orderBy('priority',descending: true).limit(10).snapshots(),
 				builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 					if(!querySnapshots.hasData)
 						return SliverList(
@@ -510,39 +520,14 @@ class _HomeState extends State<Home> {
 	void checkConnectivity() async {
 		connectivityResult = await (Connectivity().checkConnectivity());
 		if(connectivityResult == ConnectivityResult.none) {
-			connectivityWarning();
-			print('no connectivity--------------');
+			Fluttertoast.showToast(
+				msg: 'No Internet Connectivity',
+				backgroundColor: Colors.black,
+				textColor: Colors.white,
+				gravity: ToastGravity.CENTER,
+				toastLength: Toast.LENGTH_SHORT,
+			);
 		}
-		else
-			print('connected----------------');
-	}
-
-	Future<void> connectivityWarning() async {
-		return showDialog(
-			context: context,
-			barrierDismissible: false,
-			builder: (context) {
-				Future.delayed(Duration(seconds: 5), () {
-					Navigator.of(context).pop(true);
-				});
-				return AlertDialog(
-					title: Column(
-						children: <Widget>[
-							Icon(
-								Icons.error,
-								size: 40.0,
-							),
-							Padding(
-								padding: EdgeInsets.all(10.0),
-							),
-							Text(
-								'No Internet Connection'
-							)
-						],
-					)
-				);
-			}
-		);
 	}
 
 

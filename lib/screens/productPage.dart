@@ -203,12 +203,7 @@ class _ProductPage extends State<ProductPage>{
             return SliverList(
                 delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
                   return Center(
-                    child: Column(
-                      children: <Widget>[
-//                      CircularProgressIndicator(),
-                        Text("No Product to show")
-                      ],
-                    ),
+                    child: Icon(Icons.cloud_done)
                   );
                 },
                   childCount:1,

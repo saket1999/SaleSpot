@@ -9,19 +9,20 @@ class Product{
   String _date;
   String _imageCount;
   String _productId;
-  String _priority;
+  int _priority;
+
+
 
   List<String> _tag;
   List<String> _partName;
   List<String> _partValue;
 
+  int get priority => _priority;
 
-
-  String get priority => _priority;
-
-  set priority(String value) {
+  set priority(int value) {
     _priority = value;
   }
+
 
   String get productId => _productId;
 
@@ -133,8 +134,9 @@ class Product{
     this._waitingFlag=map['waitingFlag'];
     this._date=map['date'];
     this._imageCount=map['imageCount'];
-    if(map.containsKey('priority'))
-      this._priority=map['priority'];
+    if(map.containsKey('priority')) {
+      this._priority = int.parse(map['priority'].toString());
+    }
     this._tag=map['tag'].map<String>((value){return value.toString();}).toList();
     this._partName=map['partName'].map<String>((value){return value.toString();}).toList();
     this._partValue=map['partValue'].map<String>((value){return value.toString();}).toList();

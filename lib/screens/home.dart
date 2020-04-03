@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
 //			backgroundColor: Colors.white,
 			appBar: AppBar (
 //				backgroundColor: Colors.cyan,
-				title: new Text("Home"),
+				title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 22.0),),
 //				centerTitle: true,
 
 			),

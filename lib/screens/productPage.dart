@@ -58,7 +58,7 @@ class _ProductPage extends State<ProductPage>{
 
         },
         child: Icon(Icons.sort),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.cyan,
       ),
     );
   }
@@ -199,18 +199,23 @@ class _ProductPage extends State<ProductPage>{
         stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').where("tag",arrayContains: _categoryName).orderBy(sortBy).snapshots(),
         builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 
-          if(!querySnapshots.hasData)
+          if(querySnapshots.data.documents.length==0) {
+//            print(querySnapshots);
             return SliverList(
-                delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
+                delegate: SliverChildBuilderDelegate((BuildContext context,
+                    int index) {
                   return Center(
-                    child: Icon(Icons.cloud_done)
+                      child: Icon(Icons.cloud_done)
                   );
                 },
-                  childCount:1,
+                  childCount: 1,
                 )
             );
+          }
 //          if(querySnapshots.data.documents.length==0)
 //            return Center(child: CircularProgressIndicator());
+//          print('Over here');
+//          print(querySnapshots.data.documents.length);
           return SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 1.0,mainAxisSpacing: 1.0),
             delegate: SliverChildBuilderDelegate((BuildContext context, int index){

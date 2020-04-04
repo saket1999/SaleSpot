@@ -262,7 +262,7 @@ class _ProductDetailState extends State<ProductDetail> {
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Text(
           "Ratings",
-          style: TextStyle(fontSize: 20.0, color: Colors.black,fontWeight: FontWeight.w600),
+          style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
         ),
       );
     return Container();
@@ -292,8 +292,8 @@ class _ProductDetailState extends State<ProductDetail> {
         children: <Widget>[
 
           Text(
-            "Details",
-            style: TextStyle(fontSize: 20.0, color: Colors.black,fontWeight: FontWeight.w600),
+            "Product Description",
+            style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
           ),
           SizedBox(height: 10.0),
           Padding(
@@ -318,7 +318,7 @@ class _ProductDetailState extends State<ProductDetail> {
         child: Text(
           //name,
           _productContent.title,
-          style: TextStyle(fontSize: 18.0, color: Colors.black),
+          style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight:FontWeight.w500),
         ),
 
 
@@ -349,7 +349,7 @@ class _ProductDetailState extends State<ProductDetail> {
         children: <Widget>[
           Text(
             salePriceText,
-            style: TextStyle(fontSize: 26.0, color: Colors.black,fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 25.0, color: Colors.black,fontWeight: FontWeight.w600),
           ),
           SizedBox(
             width: 8.0,
@@ -357,7 +357,7 @@ class _ProductDetailState extends State<ProductDetail> {
           Text(
             originalPriceText,
             style: TextStyle(
-              fontSize: 12.0,
+              fontSize: 19.0,
               color: Colors.grey,
               decoration: TextDecoration.lineThrough,
             ),
@@ -368,7 +368,7 @@ class _ProductDetailState extends State<ProductDetail> {
           Text(
             discountPercentage,
             style: TextStyle(
-              fontSize: 12.0,
+              fontSize: 18.0,
               color: Colors.green[700],
             ),
           ),
@@ -536,7 +536,7 @@ class _ProductDetailState extends State<ProductDetail> {
             SizedBox(height: 10.0),
             Container(
 //          margin: EdgeInsets.symmetric(vertical: 20.0),
-              height: screenHeight(context)/4,
+              height: screenHeight(context)/3.5,
               child: ListView.builder(scrollDirection:Axis.horizontal,shrinkWrap: true,itemCount: similarProductsCount,itemBuilder: (BuildContext context,int index){
 
                 Product similarProduct;
@@ -547,6 +547,20 @@ class _ProductDetailState extends State<ProductDetail> {
 //            return FutureBuilder(
 //              future: FirebaseStorage.instance.ref().child(similarProduct.+'.png').getDownloadURL(),
 //            );
+                double salePrice=double.parse(similarProduct.salePrice);
+                double originalPrice=double.parse(similarProduct.originalPrice);
+                double discount;
+                String discountPercentage;
+                String originalPriceText;
+                if(originalPrice!=0){
+                  originalPriceText=rupee()+similarProduct.originalPrice;
+                  discount=1-(salePrice/originalPrice);
+                  discountPercentage=(discount*100).round().toString()+'% off';
+                }
+                else{
+                  originalPriceText='';
+                  discountPercentage='';
+                }
                 if(similarProduct.productId==_productContent.productId){
                   return Container();
                 }
@@ -556,58 +570,82 @@ class _ProductDetailState extends State<ProductDetail> {
                   if(!urls.hasData)
                     return Container();
                   String currUrl=urls.data.toString();
-                  return SizedBox(
-                    height:screenHeight(context)/5,
-                    width: screenWidth(context)/2.5,
-                    child:InkWell(
-                      onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(similarProduct.productId, _user))); },
-                      child:new Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(1.0)),
-                        elevation: 0.3,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            new Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(currUrl,height:screenHeight(context)/6),
+                  return InkWell(
+                    onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(similarProduct.productId, _user))); },
+                    child:new Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                      elevation: 0.3,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal:8.0,vertical:8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: networkImage(currUrl,screenHeight(context)/5),
                             ),
-//										SizedBox(
-//											height: 2.0,
-//										),
-                            new Container(
-                              margin: EdgeInsets.only(left: 15,),
-
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-//                                  Text(
-//                                    similarProduct.title,
-//                                    style: TextStyle(fontSize: 16.0, color: Colors.black87),
-//                                  ),
-                                Expanded(child: autoSizeText(similarProduct.title,1,16.0,Colors.black87)),
-//													SizedBox(
-//														width: 20.0,
-//													),
-                                  Expanded(
-                                    child: Text(
-                                      rupee()+similarProduct.salePrice,
-                                      style: TextStyle(
-                                          color: Colors.grey[800],
-                                          fontSize: 15),
-                                    ),
-                                  ),
-//                                  SizedBox(
-//                                    height: 2.0,
-//                                  ),
-                                ],
+                          ),
+//														SizedBox(
+//															height: screenWidth(context)/10,
+//															child:Padding(
+//																padding: const EdgeInsets.symmetric(horizontal:15.0),
+//																child: Row(
+//																	crossAxisAlignment: CrossAxisAlignment.center,
+//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
+//																	mainAxisSize: MainAxisSize.min,
+//																	children: <Widget>[
+//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
+//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//																	],
+//																),
+//															),
+//														),
+                          SizedBox(
+                            height: screenWidth(context)/20,
+                            child:autoSizeText(similarProduct.title, 1, 15.0, Colors.black87),
+                          ),
+//														SizedBox(
+//															height: screenWidth(context)/20,
+//															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
+//														),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                rupee()+similarProduct.salePrice,
+                                style: TextStyle(fontSize: 18.0, color: Colors.black87),
                               ),
-                            )
-                          ],
-                        ),
+                              SizedBox(
+                                width: 8.0,
+                              ),
+                              Text(
+                                originalPriceText,
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.grey,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 8.0,
+                              ),
 
+                              Text(
+                                discountPercentage,
+                                style: TextStyle(
+                                  fontSize: 12.0,
+                                  color: Colors.green[700],
+                                ),
+                              ),
+
+                            ],
+                          ),
+
+
+                        ],
                       ),
+
                     ),
                   );
                 },

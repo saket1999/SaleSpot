@@ -23,22 +23,9 @@ class _PromoteState extends State<Promote> {
   _PromoteState(this._user);
 
 
-  String productDocID='';
+  Product productToBeRewarded;
   bool _isLoading=false;
-
-  Map<int, Color> color =
-  {
-    50:Color.fromRGBO(136,14,79, .1),
-    100:Color.fromRGBO(136,14,79, .2),
-    200:Color.fromRGBO(136,14,79, .3),
-    300:Color.fromRGBO(136,14,79, .4),
-    400:Color.fromRGBO(136,14,79, .5),
-    500:Color.fromRGBO(136,14,79, .6),
-    600:Color.fromRGBO(136,14,79, .7),
-    700:Color.fromRGBO(136,14,79, .8),
-    800:Color.fromRGBO(136,14,79, .9),
-    900:Color.fromRGBO(136,14,79, 1),
-  };
+  int maxValue=255;
 
   RewardedVideoAd videoAd = RewardedVideoAd.instance;
 
@@ -67,11 +54,16 @@ class _PromoteState extends State<Promote> {
     FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
 
     //to display Banner Ad
-    myBanner
-      ..load()
-      ..show(
-        anchorType: AnchorType.bottom,
-      );
+//    myBanner
+//      ..load()
+//      ..show(
+//        anchorType: AnchorType.bottom,
+//      );
+    myBanner ..load().then((loaded) {
+      if (loaded && this.mounted) {
+        myBanner..show();
+      }
+    });
 
     //to display Video Ad
     videoAd.listener =
@@ -87,7 +79,10 @@ class _PromoteState extends State<Promote> {
       }
       if (event == RewardedVideoAdEvent.rewarded) {
         setState(() {
-          Firestore.instance.collection('product').document(productDocID).updateData({'priority':FieldValue.increment(1)});
+          if(productToBeRewarded.priority<255){
+            Firestore.instance.collection('product').document(productToBeRewarded.productId).updateData({'priority':FieldValue.increment(1)});
+          }
+          toast('Rewarded!');
 //          _coins += rewardAmount;
         });
       }
@@ -159,12 +154,12 @@ class _PromoteState extends State<Promote> {
   }
 
   listProduct(String currUrl,Product ds){
-    print(MaterialColor(ds.priority,color));
+//    print(temp);
 
 //    bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      color: MaterialColor((ds.priority*1000)+1000000000,color),
+      color: Color.fromRGBO(maxValue-ds.priority, 255, 255, 1.0),
       elevation: 0.5,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -211,10 +206,17 @@ class _PromoteState extends State<Promote> {
 //              textColor: Colors.white,
               child:Row(
                 children: <Widget>[
-                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0)):Text('Promote',style: TextStyle(color: Colors.black),),
+                  _isLoading?Center(child: Loading(indicator: BallPulseIndicator(), size: 30.0,color: Colors.black,)):Text('Promote',style: TextStyle(color: Colors.black),),
                 ],
               ),
-              onPressed: (){productDocID=ds.productId;loadVideo();},
+              onPressed: (){
+//                temp--;
+//                setState(() {
+//
+//                });
+                productToBeRewarded=ds;
+                loadVideo();
+                },
             ),
           )
         ],

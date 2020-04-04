@@ -28,21 +28,54 @@ class _LoginState extends State<Login> {
 	@override
 	Widget build(BuildContext context) {
 		return Scaffold(
-			appBar: AppBar(
-				title: Text('Login'),
-			),
-			body: Align(
-				alignment: Alignment(0,0.76),
-				child: _isLoading?CircularProgressIndicator():GoogleSignInButton(
-					borderRadius: 10.0,
-					darkMode: true,
-					onPressed: () => singInWithGoogle().catchError((e) {
-						setState(() {
-						  _isLoading = false;
-						});
-						return _googleSignIn.signOut();
-					}),
-				),
+			body: Column(
+//				mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+			  crossAxisAlignment: CrossAxisAlignment.center,
+			  children: <Widget>[
+          SizedBox(
+            height: screenHeight(context)/2,
+          ),
+			  	Center(
+						child:Text("SaleSpot",
+								style:TextStyle(
+									color:Colors.cyan,
+                  fontFamily:'Montserrat',
+                  fontSize: 50.0,
+                  letterSpacing: 2.0,
+                  fontWeight: FontWeight.w500,
+						)
+						)
+					),
+//			    Align(
+//			    	alignment: Alignment(0,0.76),
+//			    	child: _isLoading?CircularProgressIndicator():GoogleSignInButton(
+//			    		borderRadius: 10.0,
+//			    		darkMode: true,
+//			    		onPressed: () => singInWithGoogle().catchError((e) {
+//			    			setState(() {
+//			    			  _isLoading = false;
+//			    			});
+//			    			return _googleSignIn.signOut();
+//			    		}),
+//			    	),
+//			    ),
+              SizedBox(
+                height: screenHeight(context)/5,
+          ),
+          Align(
+            alignment: Alignment(0,0.76),
+            child: _isLoading?CircularProgressIndicator():GoogleSignInButton(
+              borderRadius: 10.0,
+              darkMode: true,
+              onPressed: () => singInWithGoogle().catchError((e) {
+                setState(() {
+                  _isLoading = false;
+                });
+                return _googleSignIn.signOut();
+              }),
+            ),
+          ),
+			  ],
 			)
 		);
 	}

@@ -165,12 +165,19 @@ class _PromoteState extends State<Promote> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
 
-          Container(
-
-            padding:EdgeInsets.all(8.0),
-            width:screenWidth(context)/3,
-            child: networkImage(currUrl, screenWidth(context)/3),
-//              child: Image.network(currUrl,height: screenWidth(context)/3,)
+//          Container(
+//
+//            padding:EdgeInsets.all(8.0),
+//            width:screenWidth(context)/3,
+//            child: networkImage(currUrl, screenWidth(context)/3),
+////              child: Image.network(currUrl,height: screenWidth(context)/3,)
+//          ),
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: networkImage(currUrl,screenWidth(context)/3),
+            ),
           ),
           Expanded(
             child: GestureDetector(

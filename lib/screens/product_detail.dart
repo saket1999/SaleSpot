@@ -98,16 +98,25 @@ class _ProductDetailState extends State<ProductDetail> {
                                 SizedBox(height: 10.0),
                                 _buildPriceWidgets(),
 
-                                _buildDivider(screenSize),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical:8.0),
+                                  child: Divider(thickness: 2,color: Colors.grey[200],),
+                                ),
+                                _buildSellerInfo(),
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical:8.0),
+                                  child: Divider(thickness: 2,color: Colors.grey[200],),
+                                ),
 
                                 _buildDetailWidgets(),
 
-                                _buildDivider(screenSize),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical:8.0),
+                                  child: Divider(thickness: 2,color: Colors.grey[200],),
+                                ),
 
                                 _buildRatingsHeader(),
-
-
-
 
                               ],
                             ),
@@ -209,7 +218,50 @@ class _ProductDetailState extends State<ProductDetail> {
 
     );
   }
+  _buildSellerInfo()
+  {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
 
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: <Widget>[
+
+            Text(
+              "Seller Location",
+              style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
+            ),
+            SizedBox(height: 15.0),
+//            Padding(
+//              padding: const EdgeInsets.fromLTRB(0.0,8.0,0.0,0.0),
+//              child: Text(
+//                _productContent.details,
+//                style: TextStyle(
+//                    fontFamily: 'Montserrat',
+//                    fontSize: 15.0,
+//                    color: Colors.black87
+//                ),
+//              ),
+//            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(Icons.location_on,color: Colors.black54,),
+              Expanded(
+                  child: Text(sellerAddress,maxLines: 3,style: TextStyle(
+                    fontFamily: 'Montserrat',
+                    fontSize: 15.0,
+                    color: Colors.black87
+                ),)
+              ),
+            ],
+          ),
+            SizedBox(height: 10.0),
+          ],
+        )
+    );
+  }
 
   Future imageLoader() async{
     var snapshot=await Firestore.instance.collection('product').document(_documentId).get();
@@ -372,23 +424,7 @@ class _ProductDetailState extends State<ProductDetail> {
               color: Colors.green[700],
             ),
           ),
-//          Expanded(
-//            child: Row(
-//              mainAxisAlignment: MainAxisAlignment.end,
-//              children: <Widget>[
-//                Text('THIS ISS'),
-//              ],
-//            )
-//          )
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Icon(Icons.location_on,color: Colors.black45,),
-                Text(sellerAddress),
-              ],
-            ),
-          )
+
         ],
       ),
     );
@@ -536,7 +572,7 @@ class _ProductDetailState extends State<ProductDetail> {
             SizedBox(height: 10.0),
             Container(
 //          margin: EdgeInsets.symmetric(vertical: 20.0),
-              height: screenHeight(context)/3.5,
+              height: screenHeight(context)/3.2,
               child: ListView.builder(scrollDirection:Axis.horizontal,shrinkWrap: true,itemCount: similarProductsCount,itemBuilder: (BuildContext context,int index){
 
                 Product similarProduct;
@@ -586,29 +622,12 @@ class _ProductDetailState extends State<ProductDetail> {
                               child: networkImage(currUrl,screenHeight(context)/5),
                             ),
                           ),
-//														SizedBox(
-//															height: screenWidth(context)/10,
-//															child:Padding(
-//																padding: const EdgeInsets.symmetric(horizontal:15.0),
-//																child: Row(
-//																	crossAxisAlignment: CrossAxisAlignment.center,
-//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
-//																	mainAxisSize: MainAxisSize.min,
-//																	children: <Widget>[
-//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-//																	],
-//																),
-//															),
-//														),
+
                           SizedBox(
                             height: screenWidth(context)/20,
                             child:autoSizeText(similarProduct.title, 1, 15.0, Colors.black87),
                           ),
-//														SizedBox(
-//															height: screenWidth(context)/20,
-//															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-//														),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[

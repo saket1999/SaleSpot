@@ -72,6 +72,7 @@ class _PromoteState extends State<Promote> {
       if(event == RewardedVideoAdEvent.failedToLoad){
         setState(() {
           _isLoading=false;
+          toast('Please try agan later');
         });
       }
       if(event == RewardedVideoAdEvent.loaded){

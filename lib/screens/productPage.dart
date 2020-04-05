@@ -31,7 +31,6 @@ class _ProductPage extends State<ProductPage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text(_categoryName),
@@ -199,7 +198,7 @@ class _ProductPage extends State<ProductPage>{
         stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').where("tag",arrayContains: _categoryName).orderBy(sortBy).snapshots(),
         builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 
-          if(querySnapshots.data.documents.length==0) {
+          if(!querySnapshots.hasData || querySnapshots.data.documents.length==0) {
 //            print(querySnapshots);
             return SliverList(
                 delegate: SliverChildBuilderDelegate((BuildContext context,

@@ -23,6 +23,9 @@ class _PromoteState extends State<Promote> {
   _PromoteState(this._user);
 
 
+  static final String AdMobAppID='ca-app-pub-1756694614877159~6657292288';
+  static final String BannerAdID='ca-app-pub-1756694614877159/2718047274';
+  static final String RewardedVideoAdID='ca-app-pub-1756694614877159/1404965600';
   Product productToBeRewarded;
   bool _isLoading=false;
   int maxValue=255;
@@ -36,10 +39,7 @@ class _PromoteState extends State<Promote> {
   );
 
   BannerAd myBanner = BannerAd(
-    // Replace the testAdUnitId with an ad unit id from the AdMob dash.
-    // https://developers.google.com/admob/android/test-ads
-    // https://developers.google.com/admob/ios/test-ads
-    adUnitId: BannerAd.testAdUnitId,
+    adUnitId: BannerAdID,
     size: AdSize.smartBanner,
     targetingInfo: targetingInfo,
     listener: (MobileAdEvent event) {
@@ -51,7 +51,7 @@ class _PromoteState extends State<Promote> {
   void initState() {
     super.initState();
 
-    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    FirebaseAdMob.instance.initialize(appId: AdMobAppID);
 
     //to display Banner Ad
 //    myBanner
@@ -69,6 +69,11 @@ class _PromoteState extends State<Promote> {
     videoAd.listener =
         (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       print("REWARDED VIDEO AD $event");
+      if(event == RewardedVideoAdEvent.failedToLoad){
+        setState(() {
+          _isLoading=false;
+        });
+      }
       if(event == RewardedVideoAdEvent.loaded){
 //        print(_coins.toString()+'Loaded');
         setState(() {
@@ -221,6 +226,8 @@ class _PromoteState extends State<Promote> {
 //                setState(() {
 //
 //                });
+                if(_isLoading)
+                  return;
                 productToBeRewarded=ds;
                 loadVideo();
                 },
@@ -238,7 +245,7 @@ class _PromoteState extends State<Promote> {
 
 //                videoAd.show();
     videoAd.load(
-        adUnitId: RewardedVideoAd.testAdUnitId,
+        adUnitId: RewardedVideoAdID,
         targetingInfo: targetingInfo);
 
 

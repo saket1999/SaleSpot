@@ -49,7 +49,6 @@ class _HomeState extends State<Home> {
 
 	void initState() {
 		super.initState();
-		timer = Timer.periodic(Duration(seconds: 5), (Timer t) => checkConnectivity());
 		checkForBlock();
 		storeSharedPreferences();
 		_fcm.configure(
@@ -531,19 +530,6 @@ class _HomeState extends State<Home> {
 			Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => Login()), (Route<dynamic> route) => false);
 		}
 		}
-
-	void checkConnectivity() async {
-		connectivityResult = await (Connectivity().checkConnectivity());
-		if(connectivityResult == ConnectivityResult.none) {
-			Fluttertoast.showToast(
-				msg: 'No Internet Connectivity',
-				backgroundColor: Colors.black,
-				textColor: Colors.white,
-				gravity: ToastGravity.CENTER,
-				toastLength: Toast.LENGTH_SHORT,
-			);
-		}
-	}
 
 
 

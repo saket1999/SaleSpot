@@ -31,7 +31,6 @@ class _ProductPage extends State<ProductPage>{
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: Text(_categoryName),
@@ -58,7 +57,7 @@ class _ProductPage extends State<ProductPage>{
 
         },
         child: Icon(Icons.sort),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.cyan,
       ),
     );
   }
@@ -71,63 +70,60 @@ class _ProductPage extends State<ProductPage>{
           builder: (BuildContext bc) {
             return StatefulBuilder(
                 builder: (BuildContext context, StateSetter state) {
-              return Padding(
-                padding: EdgeInsets.only(bottom:20.0),
-                child: Container(
-                  child: new Wrap(
-                    children: <Widget>[
-                      Padding(
-                        padding:EdgeInsets.symmetric(vertical:15.0),
-                        child: Center(
-                          child: Text('Sort By',
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.black45,
-                            letterSpacing: 1.0,
-                          ),
-                          ),
+              return Container(
+                child: new Wrap(
+                  children: <Widget>[
+                    Padding(
+                      padding:EdgeInsets.symmetric(vertical:15.0),
+                      child: Center(
+                        child: Text('Sort By',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          color: Colors.black45,
+                          letterSpacing: 1.0,
+                        ),
                         ),
                       ),
-                      SizedBox(
-                        height: 0,
-                        child:Divider(
-                          color: Colors.black54,
-                        ),
-
+                    ),
+                    SizedBox(
+                      height: 0,
+                      child:Divider(
+                        color: Colors.black54,
                       ),
-                      RadioListTile(
-                        value: 'date',
-                        groupValue: _groupValue,
-                        onChanged: (newValue) =>
-                            state(() {
-                              _groupValue = newValue;
-                              setState(() {
 
-                              });
-                              Navigator.pop(context);
-                            }),
-                        title: Text("Latest Added"),
-                        activeColor: Colors.red,
-                        selected: false,
-                      ),
-                      RadioListTile(
-                        value: 'salePrice',
-                        groupValue: _groupValue,
-                        onChanged: (newValue) =>
-                            state(() {
-                              _groupValue = newValue;
-                              setState(() {
+                    ),
+                    RadioListTile(
+                      value: 'date',
+                      groupValue: _groupValue,
+                      onChanged: (newValue) =>
+                          state(() {
+                            _groupValue = newValue;
+                            setState(() {
 
-                              });
-                              Navigator.pop(context);
-                            }),
-                        title: Text("Price"),
-                        activeColor: Colors.red,
-                        selected: false,
-                      )
+                            });
+                            Navigator.pop(context);
+                          }),
+                      title: Text("Latest Added"),
+                      activeColor: Colors.red,
+                      selected: false,
+                    ),
+                    RadioListTile(
+                      value: 'salePrice',
+                      groupValue: _groupValue,
+                      onChanged: (newValue) =>
+                          state(() {
+                            _groupValue = newValue;
+                            setState(() {
 
-                    ],
-                  ),
+                            });
+                            Navigator.pop(context);
+                          }),
+                      title: Text("Price"),
+                      activeColor: Colors.red,
+                      selected: false,
+                    )
+
+                  ],
                 ),
               );
             }
@@ -202,26 +198,23 @@ class _ProductPage extends State<ProductPage>{
         stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').where("tag",arrayContains: _categoryName).orderBy(sortBy).snapshots(),
         builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 
-          if(!querySnapshots.hasData)
+          if(!querySnapshots.hasData || querySnapshots.data.documents.length==0) {
+//            print(querySnapshots);
             return SliverList(
-                delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
-                  return Center(
-                    child: Icon(Icons.cloud_done)
-                  );
-                },
-                  childCount:1,
-                )
-            );
-          if(querySnapshots.data.documents.length==0)
-            return SliverList(
-                delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
+                delegate: SliverChildBuilderDelegate((BuildContext context,
+                    int index) {
                   return Center(
                       child: Icon(Icons.cloud_done)
                   );
                 },
-                  childCount:1,
+                  childCount: 1,
                 )
             );
+          }
+//          if(querySnapshots.data.documents.length==0)
+//            return Center(child: CircularProgressIndicator());
+//          print('Over here');
+//          print(querySnapshots.data.documents.length);
           return SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:2 ,childAspectRatio: 0.8,crossAxisSpacing: 1.0,mainAxisSpacing: 1.0),
             delegate: SliverChildBuilderDelegate((BuildContext context, int index){

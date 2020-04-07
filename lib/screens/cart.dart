@@ -9,6 +9,8 @@ import 'package:sale_spot/screens/chatScreen.dart';
 import 'package:sale_spot/screens/product_detail.dart';
 import 'package:sale_spot/services/toast.dart';
 
+import 'chooseCategory.dart';
+
 class Cart extends StatefulWidget {
 	final User _user;
 	Cart(this._user);
@@ -158,6 +160,40 @@ class _CartState extends State<Cart> {
 					return Center(
 						child: CircularProgressIndicator(),
 					);
+				int itemCount=snapshot.data.documents.length;
+				if(itemCount==0)
+					{
+						return Center(
+							child: Column(
+								mainAxisAlignment: MainAxisAlignment.center,
+								children: <Widget>[
+									Image.asset('assets/images/empty-cart1.png',width: screenWidth(context)/1.2,),
+									Padding(
+										padding: EdgeInsets.all(10.0),
+										child: Text('You haven`t posted anything yet',style: TextStyle(color: Colors.grey),),
+									),
+									Padding(
+										padding: EdgeInsets.all(8.0),
+										child: MaterialButton(
+											padding: EdgeInsets.all(18.0),
+											child: Text('Post Your Ad'),
+											color: Colors.redAccent[200],
+											textColor: Colors.white,
+											splashColor: Colors.white,
+											height: 40,
+											minWidth: 150,
+											elevation: 4,
+//                      highlightElevation: 2,
+											onPressed:(){
+												Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
+											},
+
+										),
+									)
+								],
+							),
+						);
+					}
 				return ListView.builder(
 					itemBuilder: (context, index) {
 						if(index<snapshot.data.documents.length) {

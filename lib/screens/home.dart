@@ -75,6 +75,21 @@ class _HomeState extends State<Home> {
 //				backgroundColor: Colors.cyan,
 				title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 22.0),),
 //				centerTitle: true,
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+//                  Navigator.pop(context);
+                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
+                },
+                child: Icon(
+                  Icons.shopping_cart,
+                  size: 26.0,
+                ),
+              )
+          ),
+        ],
 
 			),
 			drawer: Drawer(

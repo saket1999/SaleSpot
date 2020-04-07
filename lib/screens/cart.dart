@@ -63,85 +63,157 @@ class _CartState extends State<Cart> {
 		);
 	}
 
-	Widget getList(AsyncSnapshot<QuerySnapshot> snapshot) {
+	Widget getList(AsyncSnapshot<QuerySnapshot> snapshotList) {
 
 
 		var listView = ListView.builder(itemBuilder: (context, index) {
 			Product product;
 			String sellerName;
 			String imageURL;
-			if(index<snapshot.data.documents.length) {
+			if(index<snapshotList.data.documents.length) {
 				return StreamBuilder<DocumentSnapshot> (
-					stream: Firestore.instance.collection('product').document(snapshot.data.documents[index].data['productId']).snapshots(),
+					stream: Firestore.instance.collection('product').document(snapshotList.data.documents[index].data['productId']).snapshots(),
 					builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-						if(!snapshot.hasData)
-							return Padding(
-								padding: const EdgeInsets.all(8.0),
-								child: Center(
-									child: CircularProgressIndicator()
-								),
-							);
-						product = Product.fromMapObject(snapshot.data.data);
-						product.productId = snapshot.data.documentID;
-						return StreamBuilder<DocumentSnapshot> (
-							stream: Firestore.instance.collection('user').document(product.sellerId).snapshots(),
-							builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> sellerInfoSnapshot) {
-								if(!sellerInfoSnapshot.hasData)
-									return Padding(
-										padding: const EdgeInsets.all(8.0),
-										child: Center(
-											child: CircularProgressIndicator()
-										),
-									);
-								return StreamBuilder<QuerySnapshot> (
-									stream: Firestore.instance.collection('product').document(product.productId).collection('chat').where('buyer', isEqualTo: _user.documentId).snapshots(),
-									builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> readSnapshot) {
-										if(!readSnapshot.hasData)
-											return Padding(
-												padding: const EdgeInsets.all(8.0),
-												child: Center(
-													child: CircularProgressIndicator()
-												),
-											);
-										sellerName=sellerInfoSnapshot.data.data['name'];
-										return GestureDetector(
-											child: Card(
-												child: ListTile(
-													leading: GestureDetector(
-														onTap: () {
-															if(sellerName!=null && imageURL!=null)
-																Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product.productId, _user)));
-														},
-													  child: FutureBuilder(
-													  	future: FirebaseStorage.instance.ref().child(product.productId+'1').getDownloadURL(),
-													  	builder: (BuildContext context, AsyncSnapshot<dynamic> downloadUrl) {
-													  		if(!downloadUrl.hasData)
-													  			return networkImageWithoutHeightConstraint('https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
-
-													  		imageURL=downloadUrl.data;
-													  		return CircleAvatar(
-													  				radius: 30,
-													  				backgroundImage: NetworkImage(downloadUrl.data)
-													  		);
-//																return networkImageWithoutHeightConstraint(downloadUrl.data);
-													  	},
-													  ),
-													),
-													title: Text(product.title),
-													subtitle: Text(sellerInfoSnapshot.data.data['name']),
-													trailing: Icon(Icons.brightness_1, color: readSnapshot.data.documents.length==0 || readSnapshot.data.documents[0].data['buyerRead'] ?Colors.transparent:Colors.green, size: 15.0,),
-												),
-											),
-											onTap: () {
-											  if(sellerName!=null && imageURL!=null)
-												  Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(product, _user.documentId, false,sellerName,imageURL)));
-											},
-										);
-									},
+						try {
+							if (!snapshot.hasData || snapshot.data == null)
+								return Padding(
+									padding: const EdgeInsets.all(8.0),
+									child: Center(
+										child: CircularProgressIndicator()
+									),
 								);
-							},
-						);
-					},
+							product = Product.fromMapObject(snapshot.data.data);
+							product.productId = snapshot.data.documentID;
+							return StreamBuilder<DocumentSnapshot>(
+								stream: Firestore.instance.collection('user')
+									.document(product.sellerId)
+									.snapshots(),
+								builder: (BuildContext context, AsyncSnapshot<
+									DocumentSnapshot> sellerInfoSnapshot) {
+									if (!sellerInfoSnapshot.hasData)
+										return Padding(
+											padding: const EdgeInsets.all(8.0),
+											child: Center(
+												child: CircularProgressIndicator()
+											),
+										);
+									return StreamBuilder<QuerySnapshot>(
+										stream: Firestore.instance.collection(
+											'product').document(
+											product.productId).collection(
+											'chat')
+											.where('buyer',
+											isEqualTo: _user.documentId)
+											.snapshots(),
+										builder: (BuildContext context,
+											AsyncSnapshot<
+												QuerySnapshot> readSnapshot) {
+											if (!readSnapshot.hasData)
+												return Padding(
+													padding: const EdgeInsets
+														.all(8.0),
+													child: Center(
+														child: CircularProgressIndicator()
+													),
+												);
+											sellerName = sellerInfoSnapshot.data
+												.data['name'];
+											return GestureDetector(
+												child: Card(
+													child: ListTile(
+														leading: GestureDetector(
+															onTap: () {
+																if (sellerName !=
+																	null &&
+																	imageURL !=
+																		null)
+																	Navigator
+																		.push(
+																		context,
+																		MaterialPageRoute(
+																			builder: (
+																				context) =>
+																				ProductDetail(
+																					product
+																						.productId,
+																					_user)));
+															},
+															child: FutureBuilder(
+																future: FirebaseStorage
+																	.instance
+																	.ref()
+																	.child(
+																	product
+																		.productId +
+																		'1')
+																	.getDownloadURL(),
+																builder: (
+																	BuildContext context,
+																	AsyncSnapshot<
+																		dynamic> downloadUrl) {
+																	if (!downloadUrl
+																		.hasData)
+																		return networkImageWithoutHeightConstraint(
+																			'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
+
+																	imageURL =
+																		downloadUrl
+																			.data;
+																	return CircleAvatar(
+																		radius: 30,
+																		backgroundImage: NetworkImage(
+																			downloadUrl
+																				.data)
+																	);
+//																return networkImageWithoutHeightConstraint(downloadUrl.data);
+																},
+															),
+														),
+														title: Text(
+															product.title),
+														subtitle: Text(
+															sellerInfoSnapshot
+																.data
+																.data['name']),
+														trailing: Icon(
+															Icons.brightness_1,
+															color: readSnapshot
+																.data.documents
+																.length == 0 ||
+																readSnapshot
+																	.data
+																	.documents[0]
+																	.data['buyerRead']
+																? Colors
+																.transparent
+																: Colors.green,
+															size: 15.0,),
+													),
+												),
+												onTap: () {
+													if (sellerName != null &&
+														imageURL != null)
+														Navigator.push(context,
+															MaterialPageRoute(
+																builder: (
+																	context) =>
+																	ChatScreen(
+																		product,
+																		_user
+																			.documentId,
+																		false,
+																		sellerName,
+																		imageURL)));
+												},
+											);
+										},
+									);
+								},
+							);
+						} catch (e) {
+							return CircularProgressIndicator();
+						}
+					}
 				);
 			}
 			else

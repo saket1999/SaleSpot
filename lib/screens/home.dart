@@ -548,7 +548,7 @@ class SearchBar extends SearchDelegate<String>{
 
 	User _user;
 	SearchBar(this._user);
-
+	String _sortValue='date';
 	var recent=['Search for products'];
 
 
@@ -596,120 +596,140 @@ class SearchBar extends SearchDelegate<String>{
   @override
   Widget buildResults(BuildContext context) {
     // TODO: implement buildResults
-//		print(query+"xxx");
-    return FutureBuilder(
-			future: Firestore.instance.collection('product').where('title',isGreaterThanOrEqualTo: query).getDocuments(),
-			builder: (context,products){
-				if(!products.hasData || products.data.documents.length==0)
-					return Container();
+
+    return StatefulBuilder(
+				builder: (BuildContext context,StateSetter setState){
+					print(_sortValue+"xxx");
+					return Scaffold(
+						body:FutureBuilder(
+							future: Firestore.instance.collection('product')
+													.where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0')
+//												.orderBy(_sortValue)
+													.where('title',isGreaterThanOrEqualTo: query)
+													.where('title',isLessThan: query+'z')
+													.getDocuments(),
+							builder: (context,products){
+								if(!products.hasData || products.data.documents.length==0)
+									return Container();
 //        print(products.data+'   Hello');
-				int similarProductsCount=products.data.documents.length;
-				print(similarProductsCount.toString()+products.data.documents[0].documentID.toString());
-				return GridView.builder(
-						itemCount: similarProductsCount,
-						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.8),
-						itemBuilder: (BuildContext context,int index){
+//								int similarProductsCount=products.data.documents.length;
+//								print(similarProductsCount.toString()+products.data.documents[0].documentID.toString());
+								return GridView.builder(
+										itemCount: products.data.documents.length,
+										gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.8),
+										itemBuilder: (BuildContext context,int index){
 
-					Product similarProduct;
-					similarProduct=Product.fromMapObject(products.data.documents[index].data);
-					similarProduct.productId=products.data.documents[index].documentID.toString();
+											Product pd;
+											pd=Product.fromMapObject(products.data.documents[index].data);
+											pd.productId=products.data.documents[index].documentID.toString();
 
-					double salePrice=double.parse(similarProduct.salePrice);
-					double originalPrice=double.parse(similarProduct.originalPrice);
-					double discount;
-					String discountPercentage;
-					String originalPriceText;
-					if(originalPrice!=0){
-						originalPriceText=rupee()+similarProduct.originalPrice;
-						discount=1-(salePrice/originalPrice);
-						discountPercentage=(discount*100).round().toString()+'% off';
-					}
-					else{
-						originalPriceText='';
-						discountPercentage='';
-					}
+											double salePrice=double.parse(pd.salePrice);
+											double originalPrice=double.parse(pd.originalPrice);
+											double discount;
+											String discountPercentage;
+											String originalPriceText;
+											if(originalPrice!=0){
+												originalPriceText=rupee()+pd.originalPrice;
+												discount=1-(salePrice/originalPrice);
+												discountPercentage=(discount*100).round().toString()+'% off';
+											}
+											else{
+												originalPriceText='';
+												discountPercentage='';
+											}
 //								if(similarProduct.productId==_productContent.productId){
 //									return Container();
 //								}
-					return FutureBuilder(
-						future: FirebaseStorage.instance.ref().child(similarProduct.productId+'1').getDownloadURL(),
-						builder: (BuildContext context,AsyncSnapshot<dynamic> urls){
-							if(!urls.hasData)
-								return Container();
-							String currUrl=urls.data.toString();
-							return GridTile(
-								child:Container(
+											return FutureBuilder(
+												future: FirebaseStorage.instance.ref().child(pd.productId+'1').getDownloadURL(),
+												builder: (BuildContext context,AsyncSnapshot<dynamic> urls){
+													if(!urls.hasData)
+														return Container();
+													String currUrl=urls.data.toString();
+													return GridTile(
+															child:Container(
 //									decoration: BoxDecoration(border: Border.all(color: Colors.black, width: 0.5)),
-									child: InkWell(
-										onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(similarProduct.productId, _user))); },
-										child:new Card(
-											shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-											elevation: 0.3,
-											child: Column(
-												mainAxisSize: MainAxisSize.min,
-												mainAxisAlignment: MainAxisAlignment.center,
-												children: <Widget>[
-													Padding(
-														padding: EdgeInsets.symmetric(horizontal:8.0,vertical:8.0),
-														child: ClipRRect(
-															borderRadius: BorderRadius.circular(8.0),
-															child: networkImage(currUrl,screenHeight(context)/5),
-														),
-													),
+																child: InkWell(
+																	onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(pd.productId, _user))); },
+																	child:new Card(
+																		shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+																		elevation: 0.3,
+																		child: Column(
+																			mainAxisSize: MainAxisSize.min,
+																			mainAxisAlignment: MainAxisAlignment.center,
+																			children: <Widget>[
+																				Padding(
+																					padding: EdgeInsets.symmetric(horizontal:8.0,vertical:8.0),
+																					child: ClipRRect(
+																						borderRadius: BorderRadius.circular(8.0),
+																						child: networkImage(currUrl,screenHeight(context)/5),
+																					),
+																				),
 
-													SizedBox(
-														height: screenWidth(context)/20,
-														child:autoSizeText(similarProduct.title, 1, 15.0, Colors.black87),
-													),
+																				SizedBox(
+																					height: screenWidth(context)/20,
+																					child:autoSizeText(pd.title, 1, 15.0, Colors.black87),
+																				),
 
-													Row(
-														mainAxisAlignment: MainAxisAlignment.center,
-														children: <Widget>[
-															Text(
-																rupee()+similarProduct.salePrice,
-																style: TextStyle(fontSize: 18.0, color: Colors.black87),
-															),
-															SizedBox(
-																width: 8.0,
-															),
-															Text(
-																originalPriceText,
-																style: TextStyle(
-																	fontSize: 15.0,
-																	color: Colors.grey,
-																	decoration: TextDecoration.lineThrough,
+																				Row(
+																					mainAxisAlignment: MainAxisAlignment.center,
+																					children: <Widget>[
+																						Text(
+																							rupee()+pd.salePrice,
+																							style: TextStyle(fontSize: 18.0, color: Colors.black87),
+																						),
+																						SizedBox(
+																							width: 8.0,
+																						),
+																						Text(
+																							originalPriceText,
+																							style: TextStyle(
+																								fontSize: 15.0,
+																								color: Colors.grey,
+																								decoration: TextDecoration.lineThrough,
+																							),
+																						),
+																						SizedBox(
+																							width: 8.0,
+																						),
+
+																						Text(
+																							discountPercentage,
+																							style: TextStyle(
+																								fontSize: 12.0,
+																								color: Colors.green[700],
+																							),
+																						),
+
+																					],
+																				),
+
+
+																			],
+																		),
+
+																	),
 																),
-															),
-															SizedBox(
-																width: 8.0,
-															),
+															)
+													);
+												},
+											);
 
-															Text(
-																discountPercentage,
-																style: TextStyle(
-																	fontSize: 12.0,
-																	color: Colors.green[700],
-																),
-															),
-
-														],
-													),
-
-
-												],
-											),
-
-										),
-									),
-								)
-							);
-						},
-					);
-
-				});
+										});
 //        return Row();
-			},
-		);
+							},
+						),
+
+//						floatingActionButton: FloatingActionButton(
+//							onPressed: () {
+//								_sortOption(context,setState);
+//
+//							},
+//							child: Icon(Icons.sort),
+//							backgroundColor: Colors.cyan,
+//						),
+					);
+				});
   }
 
   @override
@@ -723,8 +743,12 @@ class SearchBar extends SearchDelegate<String>{
 								itemCount: recent.length,
 							);
 				}
+			_sortValue='date';
 			return StreamBuilder(
-					stream:Firestore.instance.collection('product').where("title",isGreaterThanOrEqualTo: query).where("title",isLessThanOrEqualTo: query+"z").snapshots(),
+					stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0')
+							.where("title",isGreaterThanOrEqualTo: query)
+							.where("title",isLessThanOrEqualTo: query+"z")
+							.snapshots(),
 					builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 						if(!querySnapshots.hasData || querySnapshots.data.documents.length==0) {
 //            print(querySnapshots);
@@ -738,6 +762,9 @@ class SearchBar extends SearchDelegate<String>{
 							children: querySnapshots.data.documents.map((document) {
 								return ListTile(
 								  title: Text(document['title']),
+									onTap: (){
+								  	query=document['title'];
+									},
 								);
 
 
@@ -747,17 +774,73 @@ class SearchBar extends SearchDelegate<String>{
 					});
   }
 
+	_sortOption(context,StateSetter setState){
+		showModalBottomSheet(
+				context: context,
+				builder: (BuildContext bc) {
+					return Container(
+						child: new Wrap(
+							children: <Widget>[
+								Padding(
+									padding:EdgeInsets.symmetric(vertical:15.0),
+									child: Center(
+										child: Text('Sort By',
+											style: TextStyle(
+												fontSize: 15.0,
+												color: Colors.black45,
+												letterSpacing: 1.0,
+											),
+										),
+									),
+								),
+								SizedBox(
+									height: 0,
+									child:Divider(
+										color: Colors.black54,
+									),
 
-}
+								),
+								RadioListTile(
+									value: 'date',
+									groupValue: _sortValue,
+									onChanged: (newValue) =>
+											setState(() {
+												_sortValue = newValue;
 
-class SearchService{
-	searchByName(String searchText) async {
-			return await Firestore.instance
-					.collection('product')
-					.getDocuments();
+//															query='';
+												Navigator.pop(context);
+											}),
+									title: Text("Latest Added"),
+									activeColor: Colors.red,
+									selected: false,
+								),
+								RadioListTile(
+									value: 'salePrice',
+									groupValue: _sortValue,
+									onChanged: (newValue) =>
+											setState(() {
+												_sortValue = newValue;
+//															setState(() {
+//
+//															});
+//															query='';
+												Navigator.pop(context);
+											}),
+									title: Text("Price"),
+									activeColor: Colors.red,
+									selected: false,
+								)
+
+							],
+						),
+					);
+				}
+		);
 	}
-//			.where('title',
-//	isGreaterThanOrEqualTo: searchText)
+
+
 }
+
+
 
 

@@ -195,7 +195,8 @@ class _ProductPage extends State<ProductPage>{
 
   _productList(String sortBy){
     return StreamBuilder(
-        stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0').where("tag",arrayContains: _categoryName).orderBy(sortBy).snapshots(),
+        stream:Firestore.instance.collection('product').where('soldFlag',isEqualTo: '0').where('waitingFlag',isEqualTo: '0')
+            .where("tag",arrayContains: _categoryName).orderBy(sortBy).orderBy('priority',descending: true).snapshots(),
         builder:(BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
 
           if(!querySnapshots.hasData || querySnapshots.data.documents.length==0) {

@@ -148,7 +148,6 @@ class _ChooseCategoryState extends State<ChooseCategory> {
         margin: EdgeInsets.all(5),
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
-//															border: Border.all(color: Colors.grey,width: 0.5),
           color: Colors.white,
           borderRadius: BorderRadius.all(
               Radius.circular(10.0) //                 <--- border radius here

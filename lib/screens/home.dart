@@ -75,6 +75,12 @@ class _HomeState extends State<Home> {
 				title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 22.0),),
 //				centerTitle: true,
         actions: <Widget>[
+        	IconButton(
+						icon: Icon(Icons.search),
+						onPressed: (){
+								showSearch(context: context, delegate:SearchBar(_user) );
+						},
+					),
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
@@ -536,6 +542,222 @@ class _HomeState extends State<Home> {
 
 
 
+}
+
+class SearchBar extends SearchDelegate<String>{
+
+	User _user;
+	SearchBar(this._user);
+
+	var recent=['Search for products'];
+
+
+	ThemeData appBarTheme(BuildContext context) {
+		assert(context != null);
+		final ThemeData theme = Theme.of(context);
+		assert(theme != null);
+		return theme.copyWith(
+			primaryColor: Colors.white,
+			primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.cyan),
+			primaryColorBrightness: Brightness.light,
+			textTheme: theme.textTheme.copyWith(
+					title: TextStyle(fontWeight: FontWeight.normal,fontSize: 18.0)),
+
+
+		);
+
+	}
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    // TODO: implement buildActions
+    return [
+    	IconButton(
+				icon:Icon(Icons.clear),
+				onPressed: (){
+					query="";
+				},
+			)
+		];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    // TODO: implement buildLeading
+    return IconButton(
+				icon:AnimatedIcon(
+						icon: AnimatedIcons.menu_arrow,
+						progress: transitionAnimation
+				),
+				onPressed:(){
+					close(context, null);
+				});
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // TODO: implement buildResults
+//		print(query+"xxx");
+    return FutureBuilder(
+			future: Firestore.instance.collection('product').where('title',isGreaterThanOrEqualTo: query).getDocuments(),
+			builder: (context,products){
+				if(!products.hasData || products.data.documents.length==0)
+					return Container();
+//        print(products.data+'   Hello');
+				int similarProductsCount=products.data.documents.length;
+				print(similarProductsCount.toString()+products.data.documents[0].documentID.toString());
+				return GridView.builder(
+						itemCount: similarProductsCount,
+						gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 0.8),
+						itemBuilder: (BuildContext context,int index){
+
+					Product similarProduct;
+					similarProduct=Product.fromMapObject(products.data.documents[index].data);
+					similarProduct.productId=products.data.documents[index].documentID.toString();
+
+					double salePrice=double.parse(similarProduct.salePrice);
+					double originalPrice=double.parse(similarProduct.originalPrice);
+					double discount;
+					String discountPercentage;
+					String originalPriceText;
+					if(originalPrice!=0){
+						originalPriceText=rupee()+similarProduct.originalPrice;
+						discount=1-(salePrice/originalPrice);
+						discountPercentage=(discount*100).round().toString()+'% off';
+					}
+					else{
+						originalPriceText='';
+						discountPercentage='';
+					}
+//								if(similarProduct.productId==_productContent.productId){
+//									return Container();
+//								}
+					return FutureBuilder(
+						future: FirebaseStorage.instance.ref().child(similarProduct.productId+'1').getDownloadURL(),
+						builder: (BuildContext context,AsyncSnapshot<dynamic> urls){
+							if(!urls.hasData)
+								return Container();
+							String currUrl=urls.data.toString();
+							return GridTile(
+								child:Container(
+//									decoration: BoxDecoration(border: Border.all(color: Colors.black, width: 0.5)),
+									child: InkWell(
+										onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(similarProduct.productId, _user))); },
+										child:new Card(
+											shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+											elevation: 0.3,
+											child: Column(
+												mainAxisSize: MainAxisSize.min,
+												mainAxisAlignment: MainAxisAlignment.center,
+												children: <Widget>[
+													Padding(
+														padding: EdgeInsets.symmetric(horizontal:8.0,vertical:8.0),
+														child: ClipRRect(
+															borderRadius: BorderRadius.circular(8.0),
+															child: networkImage(currUrl,screenHeight(context)/5),
+														),
+													),
+
+													SizedBox(
+														height: screenWidth(context)/20,
+														child:autoSizeText(similarProduct.title, 1, 15.0, Colors.black87),
+													),
+
+													Row(
+														mainAxisAlignment: MainAxisAlignment.center,
+														children: <Widget>[
+															Text(
+																rupee()+similarProduct.salePrice,
+																style: TextStyle(fontSize: 18.0, color: Colors.black87),
+															),
+															SizedBox(
+																width: 8.0,
+															),
+															Text(
+																originalPriceText,
+																style: TextStyle(
+																	fontSize: 15.0,
+																	color: Colors.grey,
+																	decoration: TextDecoration.lineThrough,
+																),
+															),
+															SizedBox(
+																width: 8.0,
+															),
+
+															Text(
+																discountPercentage,
+																style: TextStyle(
+																	fontSize: 12.0,
+																	color: Colors.green[700],
+																),
+															),
+
+														],
+													),
+
+
+												],
+											),
+
+										),
+									),
+								)
+							);
+						},
+					);
+
+				});
+//        return Row();
+			},
+		);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+
+			if(query.isEmpty)
+				{
+					return ListView.builder(itemBuilder: (context,index)=>ListTile(
+								title: Text(recent[index],textAlign:TextAlign.center,),
+							),
+								itemCount: recent.length,
+							);
+				}
+			return StreamBuilder(
+					stream:Firestore.instance.collection('product').where("title",isGreaterThanOrEqualTo: query).where("title",isLessThanOrEqualTo: query+"z").snapshots(),
+					builder: (BuildContext context,AsyncSnapshot<QuerySnapshot> querySnapshots){
+						if(!querySnapshots.hasData || querySnapshots.data.documents.length==0) {
+//            print(querySnapshots);
+							return ListView.builder(itemBuilder: (context,index)=>ListTile(
+								title: Text(recent[index]),
+							),
+								itemCount: recent.length,
+							);
+						}
+						return new ListView(
+							children: querySnapshots.data.documents.map((document) {
+								return ListTile(
+								  title: Text(document['title']),
+								);
+
+
+							}).toList(),
+						);
+
+					});
+  }
+
+
+}
+
+class SearchService{
+	searchByName(String searchText) async {
+			return await Firestore.instance
+					.collection('product')
+					.getDocuments();
+	}
+//			.where('title',
+//	isGreaterThanOrEqualTo: searchText)
 }
 
 

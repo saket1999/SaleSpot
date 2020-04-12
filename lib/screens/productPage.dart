@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/toast.dart';
 
 class ProductPage extends StatefulWidget{
@@ -241,10 +242,9 @@ class _ProductPage extends State<ProductPage>{
                   builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
                     String currUrl=downloadUrl.data.toString();
                     if(!downloadUrl.hasData)
-                      return Container(
-                          child:Center(
-                              child:CircularProgressIndicator()
-                          )
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: shimmerLayout(context),
                       );
                     return InkWell(
                       onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
@@ -262,21 +262,7 @@ class _ProductPage extends State<ProductPage>{
                                 child: networkImage(currUrl,screenHeight(context)/5),
                               ),
                             ),
-//														SizedBox(
-//															height: screenWidth(context)/10,
-//															child:Padding(
-//																padding: const EdgeInsets.symmetric(horizontal:15.0),
-//																child: Row(
-//																	crossAxisAlignment: CrossAxisAlignment.center,
-//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
-//																	mainAxisSize: MainAxisSize.min,
-//																	children: <Widget>[
-//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-//																	],
-//																),
-//															),
-//														),
+//
                             SizedBox(
                               height: screenWidth(context)/20,
                               child:autoSizeText(product.title, 1, 15.0, Colors.black87),

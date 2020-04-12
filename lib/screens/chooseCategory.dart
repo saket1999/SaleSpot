@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/postNewAd.dart';
 import 'package:sale_spot/screens/subCategory.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/toast.dart';
 
 class ChooseCategory extends StatefulWidget {
@@ -31,7 +32,7 @@ class _ChooseCategoryState extends State<ChooseCategory> {
       body:	Container(
           height:screenHeight(context),
           width:screenWidth(context),
-          color: Colors.grey[200],
+          color: Colors.white,
           child:CustomScrollView(
               slivers:<Widget>[
 
@@ -58,9 +59,7 @@ class _ChooseCategoryState extends State<ChooseCategory> {
                   children: <Widget>[
                     CircularProgressIndicator(),
                   ],
-
                 );
-
               },
                 childCount:1,
               )
@@ -80,12 +79,10 @@ class _ChooseCategoryState extends State<ChooseCategory> {
                 if(iconUrl=='null')
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                        child: CircularProgressIndicator()
-                    ),
+                    child: shimmerCategory(context,screenWidth(context)/5,screenWidth(context)/4),
                   );
                 return Card(
-//										elevation: 10.0,
+										elevation: 0.0,
                   child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
 
                 );
@@ -109,7 +106,7 @@ class _ChooseCategoryState extends State<ChooseCategory> {
           //color: Colors.lightBlueAccent,
           decoration: BoxDecoration(
 //						color: Colors.white,
-            border: Border.all(color: Colors.white,width: 2.0),
+            border: Border.all(color: Colors.grey[200],width: 1.0),
             borderRadius: BorderRadius.all(
                 Radius.circular(5.0) //                 <--- border radius here
             ),

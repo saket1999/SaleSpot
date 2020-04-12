@@ -19,9 +19,11 @@ import 'package:sale_spot/screens/editProfile.dart';
 import 'package:sale_spot/screens/product_detail.dart';
 import 'package:sale_spot/screens/promote.dart';
 import 'package:sale_spot/screens/subCategory.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/slideTransition.dart';
 import 'package:sale_spot/services/toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'faq.dart';
 import 'feedback.dart';
 import 'myProductList.dart';
@@ -220,8 +222,7 @@ class _HomeState extends State<Home> {
 					onPressed: () {
 //						Navigator.push(context,SlideBottomRoute( page:ChooseCategory( _user)));
 						Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
-
-
+//					 	  successDialog(context);
 					},
 //					child: Icon(Icons.add,color: Colors.white,),
 						child: Text("SELL",style: TextStyle(
@@ -235,6 +236,8 @@ class _HomeState extends State<Home> {
 		);
 
 	}
+
+
 	_openProfilePage(BuildContext context) async{
 		_user=await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProfile(_user)));
 	}
@@ -252,8 +255,6 @@ class _HomeState extends State<Home> {
 						borderRadius: BorderRadius.all(
 								Radius.circular(10.0) //                 <--- border radius here
 						),
-
-
 
 					),
 
@@ -313,7 +314,8 @@ class _HomeState extends State<Home> {
 							delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
 							return Column(
 								children: <Widget>[
-									CircularProgressIndicator(),
+//									CircularProgressIndicator(),
+										Container(),
 								],
 
 							);
@@ -343,9 +345,7 @@ class _HomeState extends State<Home> {
 								if(iconUrl=='null')
 									return Padding(
 										padding: const EdgeInsets.all(8.0),
-										child: Center(
-												child: CircularProgressIndicator()
-										),
+										child: shimmerCategory(context,screenHeight(context)/20,screenWidth(context)/5),
 									);
 								return Card(
 										elevation: 0.0,
@@ -371,7 +371,8 @@ class _HomeState extends State<Home> {
 								delegate:SliverChildBuilderDelegate(( BuildContext context, int index) {
 									return Column(
 										children: <Widget>[
-											CircularProgressIndicator(),
+//											CircularProgressIndicator(),
+												Container(),
 										],
 									);
 								},
@@ -407,10 +408,8 @@ class _HomeState extends State<Home> {
 										String currUrl=downloadUrl.data.toString();
 										if(!downloadUrl.hasData)
 											return Padding(
-												padding: const EdgeInsets.all(20.0),
-												child: Center(
-														child:CircularProgressIndicator()
-												),
+												padding: const EdgeInsets.all(8.0),
+												child: shimmerLayout(context),
 											);
 										return InkWell(
 											onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
@@ -428,29 +427,11 @@ class _HomeState extends State<Home> {
 														    child: networkImage(currUrl,screenHeight(context)/5),
 														  ),
 														),
-//														SizedBox(
-//															height: screenWidth(context)/10,
-//															child:Padding(
-//																padding: const EdgeInsets.symmetric(horizontal:15.0),
-//																child: Row(
-//																	crossAxisAlignment: CrossAxisAlignment.center,
-//																	mainAxisAlignment: MainAxisAlignment.spaceAround,
-//																	mainAxisSize: MainAxisSize.min,
-//																	children: <Widget>[
-//																		Expanded(child: autoSizeText(product.title, 1, 17.0, Colors.black87)),
-//																		autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-//																	],
-//																),
-//															),
-//														),
+
 														SizedBox(
 															height: screenWidth(context)/20,
 															child:autoSizeText(product.title, 1, 15.0, Colors.black87),
 														),
-//														SizedBox(
-//															height: screenWidth(context)/20,
-//															child:	autoSizeText(rupee()+product.salePrice, 1, 18.0, Colors.black87),
-//														),
 														Row(
 														mainAxisAlignment: MainAxisAlignment.center,
 														children: <Widget>[
@@ -644,7 +625,10 @@ class SearchBar extends SearchDelegate<String>{
 												future: FirebaseStorage.instance.ref().child(pd.productId+'1').getDownloadURL(),
 												builder: (BuildContext context,AsyncSnapshot<dynamic> urls){
 													if(!urls.hasData)
-														return Container();
+														return Padding(
+														  padding: const EdgeInsets.all(8.0),
+														  child: shimmerLayout(context),
+														);
 													String currUrl=urls.data.toString();
 													return GridTile(
 															child:Container(

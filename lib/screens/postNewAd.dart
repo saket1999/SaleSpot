@@ -500,9 +500,11 @@ class _PostNewAdState extends State<PostNewAd> {
                       },
                     ),
                   ],
-                  mainAxisAlignment: MainAxisAlignment.center,)
+                  mainAxisAlignment: MainAxisAlignment.center,),
+
 
               ],
+
             ),
           ),
         )
@@ -523,9 +525,97 @@ class _PostNewAdState extends State<PostNewAd> {
       _isUploading=false;
     });
     toast('Ad successfully uploaded');
-    Navigator.pop(context);
-    Navigator.pop(context);
+    successDialog(context);
+//    Navigator.pop(context);
+//    Navigator.pop(context);
 //    Navigator.popUntil(context, ModalRoute.withName(Navigator.defaultRouteName));
+  }
+
+  successDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+//      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        double rad=screenWidth(context)/8;
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          child: Stack(
+
+            children: <Widget>[
+              //...bottom card part,
+              //...top circlular image part,
+              Container(
+                padding: EdgeInsets.only(
+                  top: rad + 20.0,
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                ),
+                margin: EdgeInsets.only(top: rad),
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10.0,
+                      offset: const Offset(0.0, 10.0),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // To make the card compact
+                  children: <Widget>[
+                    Text(
+                      'Success',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(
+                      'Your Product is sent for verification to admin',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.pop(context);
+                          Navigator.pop(context);// To close the dialog
+                        },
+                        child: Text('Okay'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                left: 16,
+                right: 16,
+                child: CircleAvatar(
+                  backgroundColor: Colors.green,
+                  child: Icon(Icons.check,size: 40.0,color: Colors.white,),
+                  radius: rad,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
   }
 
  _imagePickCamera() async {

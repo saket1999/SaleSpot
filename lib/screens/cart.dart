@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/chatScreen.dart';
@@ -120,93 +121,106 @@ class _CartState extends State<Cart> {
 												);
 											sellerName = sellerInfoSnapshot.data
 												.data['name'];
-											return GestureDetector(
-												child: Card(
-													child: ListTile(
-														leading: GestureDetector(
-															onTap: () {
-																if (sellerName !=
-																	null &&
-																	imageURL !=
-																		null)
-																	Navigator
-																		.push(
-																		context,
-																		MaterialPageRoute(
-																			builder: (
-																				context) =>
-																				ProductDetail(
-																					product
-																						.productId,
-																					_user)));
-															},
-															child: FutureBuilder(
-																future: FirebaseStorage
-																	.instance
-																	.ref()
-																	.child(
-																	product
-																		.productId +
-																		'1')
-																	.getDownloadURL(),
-																builder: (
-																	BuildContext context,
-																	AsyncSnapshot<
-																		dynamic> downloadUrl) {
-																	if (!downloadUrl
-																		.hasData)
-																		return networkImageWithoutHeightConstraint(
-																			'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
+											return Slidable(
+												actionPane: SlidableDrawerActionPane(),
+											  actionExtentRatio: 0.15,
+											  closeOnScroll: false,
+											  secondaryActions: <Widget>[
+											  	IconButton(
+													icon: Icon(Icons.delete),
+													onPressed: () {
+														deleteChats(product, snapshotList.data.documents[index].documentID);
+													},
+												)
+											  ],
+											  child: GestureDetector(
+											  	child: Card(
+											  		child: ListTile(
+											  			leading: GestureDetector(
+											  				onTap: () {
+											  					if (sellerName !=
+											  						null &&
+											  						imageURL !=
+											  							null)
+											  						Navigator
+											  							.push(
+											  							context,
+											  							MaterialPageRoute(
+											  								builder: (
+											  									context) =>
+											  									ProductDetail(
+											  										product
+											  											.productId,
+											  										_user)));
+											  				},
+											  				child: FutureBuilder(
+											  					future: FirebaseStorage
+											  						.instance
+											  						.ref()
+											  						.child(
+											  						product
+											  							.productId +
+											  							'1')
+											  						.getDownloadURL(),
+											  					builder: (
+											  						BuildContext context,
+											  						AsyncSnapshot<
+											  							dynamic> downloadUrl) {
+											  						if (!downloadUrl
+											  							.hasData)
+											  							return networkImageWithoutHeightConstraint(
+											  								'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
 
-																	imageURL =
-																		downloadUrl
-																			.data;
-																	return CircleAvatar(
-																		radius: 30,
-																		backgroundImage: NetworkImage(
-																			downloadUrl
-																				.data)
-																	);
+											  						imageURL =
+											  							downloadUrl
+											  								.data;
+											  						return CircleAvatar(
+											  							radius: 30,
+											  							backgroundImage: NetworkImage(
+											  								downloadUrl
+											  									.data)
+											  						);
 //																return networkImageWithoutHeightConstraint(downloadUrl.data);
-																},
-															),
-														),
-														title: Text(
-															product.title),
-														subtitle: Text(
-															sellerInfoSnapshot
-																.data
-																.data['name']),
-														trailing: Icon(
-															Icons.brightness_1,
-															color: readSnapshot
-																.data.documents
-																.length == 0 ||
-																readSnapshot
-																	.data
-																	.documents[0]
-																	.data['buyerRead']
-																? Colors
-																.transparent
-																: Colors.green,
-															size: 15.0,),
-													),
-												),
-												onTap: () {
-													if (sellerName != null &&
-														imageURL != null)
-														Navigator.push(context,
-															MaterialPageRoute(
-																builder: (
-																	context) =>
-																	ChatScreen(
-																		product,
-																		_user
-																			.documentId,
-																		false,
-																		sellerName,
-																		imageURL)));
-												},
+											  					},
+											  				),
+											  			),
+											  			title: Text(
+											  				product.title),
+											  			subtitle: Text(
+											  				sellerInfoSnapshot
+											  					.data
+											  					.data['name']),
+											  			trailing: Icon(
+											  				Icons.brightness_1,
+											  				color: readSnapshot
+											  					.data.documents
+											  					.length == 0 ||
+											  					readSnapshot
+											  						.data
+											  						.documents[0]
+											  						.data['buyerRead']
+											  					? Colors
+											  					.transparent
+											  					: Colors.green,
+											  				size: 15.0,),
+											  		),
+											  	),
+											  	onTap: () {
+											  		if (sellerName != null &&
+											  			imageURL != null)
+											  			Navigator.push(context,
+											  				MaterialPageRoute(
+											  					builder: (
+											  						context) =>
+											  						ChatScreen(
+											  							product,
+											  							_user
+											  								.documentId,
+											  							false,
+											  							sellerName,
+											  							imageURL)));
+											  	},
+											  ),
 											);
 										},
 									);
@@ -347,5 +361,18 @@ class _CartState extends State<Cart> {
 				);
 			},
 		);
+	}
+
+	void deleteChats(Product product, String userCartId) async {
+//		print('--------------------'+userCartId);
+	await Firestore.instance.collection('user').document(_user.documentId).collection('cart').document(userCartId).delete();
+	QuerySnapshot documentSnapshot = await Firestore.instance.collection('product').document(product.productId).collection('chat').where('buyer', isEqualTo: _user.documentId).getDocuments();
+//	print('-------------------'+documentSnapshot.documents[0].documentID);
+	Firestore.instance.collection('product').document(product.productId).collection('chat').document(documentSnapshot.documents[0].documentID).collection('messages').getDocuments().then((toBeDeleted) {
+		for(DocumentSnapshot ds in toBeDeleted.documents) {
+			ds.reference.delete();
+		}
+	});
+	documentSnapshot.documents[0].reference.delete();
 	}
 }

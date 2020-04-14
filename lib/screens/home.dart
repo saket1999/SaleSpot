@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,11 +47,11 @@ class _HomeState extends State<Home> {
 	FirebaseMessaging _fcm = FirebaseMessaging();
 
 	String token;
-	Timer timer;
-	var connectivityResult;
+
 
 	void initState() {
 		super.initState();
+		checkDbAccess();
 		checkForBlock();
 		storeSharedPreferences();
 		_fcm.configure(
@@ -520,6 +521,42 @@ class _HomeState extends State<Home> {
 
 
 
+	void checkDbAccess() async {
+		Stream<DocumentSnapshot> userP = Firestore.instance.collection('db').document('zMLNFMLPBdRdTLwhEzvI').snapshots();
+		userP.listen((DocumentSnapshot value) {
+			if(value != null) {
+				print(value.data.toString());
+				if(!value['dbEnabled'])
+					dbDisabled();
+			}
+		});
+	}
+
+	Future<void> dbDisabled() async {
+		return showDialog<void>(
+			context: context,
+//			barrierDismissible: false,
+			builder: (BuildContext context) {
+				return AlertDialog(
+					shape: RoundedRectangleBorder(
+						borderRadius: BorderRadius.all(Radius.circular(20.0))
+					),
+					title: Text('Under Maintenance', style: TextStyle(color: Colors.red),),
+					content: Text('Please retry after some time.'),
+					actions: <Widget>[
+						RaisedButton(
+							child: Text('Okay'),
+							color: Colors.cyan[300],
+							onPressed: () => SystemChannels.platform.invokeMethod('SystemNavigator.pop'),
+							shape: RoundedRectangleBorder(
+								borderRadius: BorderRadius.all(Radius.circular(20.0))
+							),
+						)
+					],
+				);
+			}
+		);
+	}
 
 
 
@@ -821,8 +858,6 @@ class SearchBar extends SearchDelegate<String>{
 				}
 		);
 	}
-
-
 }
 
 

@@ -103,6 +103,13 @@ class _ChatScreenState extends State<ChatScreen> {
 					padding: EdgeInsets.all(4.0),
 					child: Column(
 						children: <Widget>[
+							isSeller ?Container() :Padding(
+								padding: EdgeInsets.only(bottom: 10.0),
+								child: Bubble(
+									color: Colors.red[200],
+									child: Text('You can remove Products from cart using Left Swipe'),
+								),
+							),
 							Padding(
 							  padding: const EdgeInsets.only(bottom: 5.0),
 							  child: Bubble(

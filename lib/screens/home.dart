@@ -535,7 +535,7 @@ class _HomeState extends State<Home> {
 	Future<void> dbDisabled() async {
 		return showDialog<void>(
 			context: context,
-//			barrierDismissible: false,
+			barrierDismissible: false,
 			builder: (BuildContext context) {
 				return AlertDialog(
 					shape: RoundedRectangleBorder(

@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/toast.dart';
 
 import 'chooseCategory.dart';
@@ -34,15 +36,7 @@ class _MyProductListState extends State<myProductList>{
         title: Text('My Products'),
       ),
       body: getProductsList()
-//      Container(
-//        height:screenHeight(context),
-//        width:screenWidth(context),
-//          child:CustomScrollView(
-//              slivers:<Widget>[
-//                _myProductList,
-//              ]
-//          )
-//      ),
+
     );
   }
 
@@ -98,8 +92,7 @@ class _MyProductListState extends State<myProductList>{
             stream: Firestore.instance.collection('product').document(documentSnapshot['productId']).snapshots(),
             builder: (BuildContext context,AsyncSnapshot<DocumentSnapshot> documentSnapshot){
               if(!documentSnapshot.hasData)
-                return Container();
-
+                  return Container();
 //              print(documentSnapshot.data.data);
               Product product=Product.fromMapObject(documentSnapshot.data.data);
               product.productId=documentSnapshot.data.documentID;
@@ -108,7 +101,11 @@ class _MyProductListState extends State<myProductList>{
                 future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
                 builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
                   if(!downloadUrl.hasData)
-                    return Container();
+//                    return Center(child:CircularProgressIndicator() );
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: shimmerItemHorizontal(context,screenWidth(context)/3,screenWidth(context)),
+                    );
 //                  print('Download url is: '+downloadUrl.data.toString());
                   String productImageUrl=downloadUrl.data.toString();
                   bool soldFlag=product.soldFlag=='1';
@@ -132,101 +129,165 @@ class _MyProductListState extends State<myProductList>{
   listProduct(String currUrl,Product ds,bool soldFlag){
 
     bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      elevation: 0.5,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.15,
+      closeOnScroll: true,
+      secondaryActions: soldFlag==false?<Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom:1.0),
+          child: IconSlideAction(
+              caption: 'Edit',
+              color: Colors.grey[300]	,
+              icon: Icons.edit,
+              onTap: (){
+                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user, ds)));
+              }
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom:1.0),
+          child: IconSlideAction(
+              caption: 'Delete',
+              color: Colors.red[400]	,
+              icon: Icons.delete,
+              onTap: (){
+                return deleteDialog(context,ds);
+              }
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom:1.0),
+          child: IconSlideAction(
+              caption: 'Sold',
+              color: Colors.green[400]	,
+              icon: Icons.check,
+              onTap: (){
+                return soldDialog(context,ds);
+              }
+          ),
+        ),
+
+      ]:
+      <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom:1.0),
+          child: IconSlideAction(
+              caption: 'Sold',
+              color: Colors.green[400]	,
+              icon: Icons.check,
+              onTap: (){
+                toast('Sold product cannot be modified');
+//              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your Product is Sold')));
+              }
+          ),
+        ),
+      ],
+      child: Card(
+//        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        elevation: 0.05,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
 //          Container(
 //              padding:EdgeInsets.all(8.0),
 //              width:screenWidth(context)/3,
 //              child: networkImage(currUrl, screenWidth(context)/3),
 ////              child: Image.network(currUrl,height: screenWidth(context)/3,)
 //          ),
-          GestureDetector(
-            onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(ds.productId.toString(), _user)));},
-            child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: networkImage(currUrl,screenWidth(context)/3),
-              ),
-            ),
-          ),
-          Expanded(
-            child: GestureDetector(
+            GestureDetector(
               onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(ds.productId.toString(), _user)));},
               child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(bottom:4.0),
-                      child: autoSizeText(ds.title, 2, 18.0, Colors.black87)
-//                      child: Text(ds.title,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(bottom:4.0),
-                      child: autoSizeText(rupee()+ds.salePrice, 1, 20.0, Colors.black87)
-//                      child: Text(rupee()+ds.salePrice,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
-                    ),
-                  ],
+                padding: EdgeInsets.all(10.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: networkImage(currUrl,screenWidth(context)/3),
                 ),
               ),
             ),
-          ),
-          soldFlag?Container():(renewFlag?
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.amberAccent,width: 2.0)
-        ),
-        color: Colors.white,
-        textColor: Colors.white,
-        child:Row(
-          children: <Widget>[
-            Text('Renew',style: TextStyle(color: Colors.amberAccent),),
-            Icon(Icons.check,color: Colors.amberAccent,),
+            Expanded(
+              child: GestureDetector(
+                onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(ds.productId.toString(), _user)));},
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom:4.0),
+                        child: autoSizeText(ds.title, 3, 18.0, Colors.black87)
+//                      child: Text(ds.title,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom:4.0),
+                        child: autoSizeText(rupee()+ds.salePrice, 1, 20.0, Colors.black87)
+//                      child: Text(rupee()+ds.salePrice,style: TextStyle(fontSize: 20.0, color: Colors.black87)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.arrow_back_ios,size:15.0,color: Colors.grey,),
+                ),
+              ],
+            )
+//            soldFlag?Container():(renewFlag?
+//      Padding(
+//        padding: const EdgeInsets.all(8.0),
+//        child: RaisedButton(
+//          shape: RoundedRectangleBorder(
+//            borderRadius: BorderRadius.circular(18.0),
+//            side: BorderSide(color: Colors.amberAccent,width: 2.0)
+//          ),
+//          color: Colors.white,
+//          textColor: Colors.white,
+//          child:Row(
+//            children: <Widget>[
+//              Text('Renew',style: TextStyle(color: Colors.amberAccent),),
+//              Icon(Icons.check,color: Colors.amberAccent,),
+//            ],
+//          ),
+//          onPressed: (){renewProduct(ds);},
+//        ),
+//      ):
+//            Expanded(
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                  crossAxisAlignment: CrossAxisAlignment.end,
+//                  children: <Widget>[
+//                    GestureDetector(
+//                      onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user, ds)));
+//                      },
+//                      child: Padding(
+//                        padding: const EdgeInsets.all(10.0),
+//                        child: Icon(Icons.edit),
+//                      ),
+//                    ),
+//                    GestureDetector(
+//                      onTap: (){return deleteDialog(context,ds);},
+//                      child: Padding(
+//                        padding: const EdgeInsets.all(10.0),
+//                        child: Icon(Icons.delete),
+//                      ),
+//                    ),
+//                    GestureDetector(
+//                      onTap:(){return soldDialog(context,ds);},
+//                      child: Padding(
+//                        padding: const EdgeInsets.all(10.0),
+//                        child: Icon(Icons.check),
+//                      ),
+//                    ),
+//                  ],
+//                )
+//            ))
           ],
         ),
-        onPressed: (){renewProduct(ds);},
-      ),
-    ):
-          Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap:(){    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user, ds)));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Icon(Icons.edit),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: (){return deleteDialog(context,ds);},
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Icon(Icons.delete),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap:(){return soldDialog(context,ds);},
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Icon(Icons.check),
-                    ),
-                  ),
-                ],
-              )
-          ))
-        ],
       ),
     );
   }

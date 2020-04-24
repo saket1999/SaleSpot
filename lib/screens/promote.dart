@@ -9,6 +9,7 @@ import 'package:loading/loading.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/toast.dart';
 
 class Promote extends StatefulWidget {
@@ -138,7 +139,10 @@ class _PromoteState extends State<Promote> {
                 future: FirebaseStorage.instance.ref().child(product.productId.toString()+'1').getDownloadURL(),
                 builder: (BuildContext context,AsyncSnapshot<dynamic> downloadUrl){
                   if(!downloadUrl.hasData)
-                    return Container();
+                    return Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: shimmerItemHorizontal(context,screenWidth(context)/3,screenWidth(context)),
+                    );
 //                  print('Download url is: '+downloadUrl.data.toString());
                   String productImageUrl=downloadUrl.data.toString();
 //                  bool soldFlag=product.soldFlag=='1';

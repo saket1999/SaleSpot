@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 
 void toast(String message) {
 	Fluttertoast.showToast(
@@ -37,7 +38,8 @@ AutoSizeText autoSizeText(String text,[int maxLines=1,double fontSize=16.0,Color
 CachedNetworkImage networkImage(String url,double height){
 	return CachedNetworkImage(
 		imageUrl: url,
-		placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+//		placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+			placeholder: (context,url)=>shimmerImage(context,height),
 		errorWidget: (context, url, error) => Icon(Icons.error),
 		height: height,
 	);

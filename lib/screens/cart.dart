@@ -124,17 +124,25 @@ class _CartState extends State<Cart> {
 											return Slidable(
 												actionPane: SlidableDrawerActionPane(),
 											  actionExtentRatio: 0.15,
-											  closeOnScroll: false,
+											  closeOnScroll: true,
 											  secondaryActions: <Widget>[
-											  	IconButton(
-													icon: Icon(Icons.delete),
-													onPressed: () {
-														deleteChats(product, snapshotList.data.documents[index].documentID);
-													},
-												)
+//											  	IconButton(
+//													icon: Icon(Icons.delete),
+//													onPressed: () {
+//														deleteChats(product, snapshotList.data.documents[index].documentID);
+//													},
+//												)
+
+													IconSlideAction(
+														caption: 'Delete',
+														color: Colors.redAccent	,
+														icon: Icons.delete,
+														onTap: () => deleteChats(product, snapshotList.data.documents[index].documentID),
+													),
 											  ],
 											  child: GestureDetector(
 											  	child: Card(
+														elevation: 0.0,
 											  		child: ListTile(
 											  			leading: GestureDetector(
 											  				onTap: () {
@@ -288,7 +296,7 @@ class _CartState extends State<Cart> {
 								builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> buyerSnapshot) {
 									if(!buyerSnapshot.hasData)
 										return Center(
-											child: CircularProgressIndicator(),
+//											child: CircularProgressIndicator(),
 										);
 									Product product = Product.fromMapObject(snapshot.data.documents[index].data);
 									product.productId = snapshot.data.documents[index].documentID;
@@ -319,6 +327,7 @@ class _CartState extends State<Cart> {
 																	);
 																return GestureDetector(
 																	child: Card(
+																		elevation: 0.0,
 																		child: ListTile(
 																			leading: FutureBuilder(
 																				future: FirebaseStorage.instance.ref().child(product.productId+'1').getDownloadURL(),

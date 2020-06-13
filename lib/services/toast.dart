@@ -27,12 +27,13 @@ String rupee(){
 	return '₹';
 }
 
-AutoSizeText autoSizeText(String text,[int maxLines=1,double fontSize=16.0,Color color=Colors.black87]){
+AutoSizeText autoSizeText(String text,[int maxLines,double fontSize,Color color=Colors.black87]){
 	return AutoSizeText(
 		text,
 		style: TextStyle(fontSize: fontSize, color: color),
 		maxLines: maxLines,
-		overflow: TextOverflow.ellipsis
+		overflow: TextOverflow.ellipsis,
+		textAlign: TextAlign.center,
 	);
 }
 CachedNetworkImage networkImage(String url,double height){
@@ -42,6 +43,17 @@ CachedNetworkImage networkImage(String url,double height){
 			placeholder: (context,url)=>shimmerImage(context,height),
 		errorWidget: (context, url, error) => Icon(Icons.error),
 		height: height,
+	);
+}
+CachedNetworkImage networkImageHeightWidth(String url,double height,double width){
+	return CachedNetworkImage(
+		imageUrl: url,
+//		placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+		placeholder: (context,url)=>shimmerImageHeightWidth(context,height,width),
+		errorWidget: (context, url, error) => Icon(Icons.error),
+		fit:BoxFit.fill,
+		height: height,
+		width:width,
 	);
 }
 CachedNetworkImage networkImageWithoutHeightConstraint(String url){

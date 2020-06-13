@@ -121,11 +121,13 @@ class _CartState extends State<Cart> {
 												);
 											sellerName = sellerInfoSnapshot.data
 												.data['name'];
-											return Slidable(
-												actionPane: SlidableDrawerActionPane(),
-											  actionExtentRatio: 0.15,
-											  closeOnScroll: true,
-											  secondaryActions: <Widget>[
+											return Card(
+												elevation: 0.0,
+											  child: Slidable(
+											  	actionPane: SlidableDrawerActionPane(),
+											    actionExtentRatio: 0.15,
+											    closeOnScroll: true,
+											    secondaryActions: <Widget>[
 //											  	IconButton(
 //													icon: Icon(Icons.delete),
 //													onPressed: () {
@@ -133,101 +135,99 @@ class _CartState extends State<Cart> {
 //													},
 //												)
 
-													IconSlideAction(
-														caption: 'Delete',
-														color: Colors.redAccent	,
-														icon: Icons.delete,
-														onTap: () => deleteChats(product, snapshotList.data.documents[index].documentID),
-													),
-											  ],
-											  child: GestureDetector(
-											  	child: Card(
-														elevation: 0.0,
-											  		child: ListTile(
-											  			leading: GestureDetector(
-											  				onTap: () {
-											  					if (sellerName !=
-											  						null &&
-											  						imageURL !=
-											  							null)
-											  						Navigator
-											  							.push(
-											  							context,
-											  							MaterialPageRoute(
-											  								builder: (
-											  									context) =>
-											  									ProductDetail(
-											  										product
-											  											.productId,
-											  										_user)));
-											  				},
-											  				child: FutureBuilder(
-											  					future: FirebaseStorage
-											  						.instance
-											  						.ref()
-											  						.child(
-											  						product
-											  							.productId +
-											  							'1')
-											  						.getDownloadURL(),
-											  					builder: (
-											  						BuildContext context,
-											  						AsyncSnapshot<
-											  							dynamic> downloadUrl) {
-											  						if (!downloadUrl
-											  							.hasData)
-											  							return networkImageWithoutHeightConstraint(
-											  								'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
-
-											  						imageURL =
-											  							downloadUrl
-											  								.data;
-											  						return CircleAvatar(
-											  							radius: 30,
-											  							backgroundImage: NetworkImage(
-											  								downloadUrl
-											  									.data)
-											  						);
-//																return networkImageWithoutHeightConstraint(downloadUrl.data);
-											  					},
-											  				),
-											  			),
-											  			title: Text(
-											  				product.title),
-											  			subtitle: Text(
-											  				sellerInfoSnapshot
-											  					.data
-											  					.data['name']),
-											  			trailing: Icon(
-											  				Icons.brightness_1,
-											  				color: readSnapshot
-											  					.data.documents
-											  					.length == 0 ||
-											  					readSnapshot
-											  						.data
-											  						.documents[0]
-											  						.data['buyerRead']
-											  					? Colors
-											  					.transparent
-											  					: Colors.green,
-											  				size: 15.0,),
+											  		IconSlideAction(
+											  			caption: 'Delete',
+											  			color: Colors.redAccent	,
+											  			icon: Icons.delete,
+											  			onTap: () => deleteChats(product, snapshotList.data.documents[index].documentID),
 											  		),
-											  	),
-											  	onTap: () {
-											  		if (sellerName != null &&
-											  			imageURL != null)
-											  			Navigator.push(context,
-											  				MaterialPageRoute(
-											  					builder: (
-											  						context) =>
-											  						ChatScreen(
-											  							product,
-											  							_user
-											  								.documentId,
-											  							false,
-											  							sellerName,
-											  							imageURL)));
-											  	},
+											    ],
+											    child: GestureDetector(
+											    	child: ListTile(
+											    		leading: GestureDetector(
+											    			onTap: () {
+											    				if (sellerName !=
+											    					null &&
+											    					imageURL !=
+											    						null)
+											    					Navigator
+											    						.push(
+											    						context,
+											    						MaterialPageRoute(
+											    							builder: (
+											    								context) =>
+											    								ProductDetail(
+											    									product
+											    										.productId,
+											    									_user)));
+											    			},
+											    			child: FutureBuilder(
+											    				future: FirebaseStorage
+											    					.instance
+											    					.ref()
+											    					.child(
+											    					product
+											    						.productId +
+											    						'1')
+											    					.getDownloadURL(),
+											    				builder: (
+											    					BuildContext context,
+											    					AsyncSnapshot<
+											    						dynamic> downloadUrl) {
+											    					if (!downloadUrl
+											    						.hasData)
+											    						return networkImageWithoutHeightConstraint(
+											    							'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
+
+											    					imageURL =
+											    						downloadUrl
+											    							.data;
+											    					return CircleAvatar(
+											    						radius: 30,
+											    						backgroundImage: NetworkImage(
+											    							downloadUrl
+											    								.data)
+											    					);
+//																return networkImageWithoutHeightConstraint(downloadUrl.data);
+											    				},
+											    			),
+											    		),
+											    		title: Text(
+											    			product.title),
+											    		subtitle: Text(
+											    			sellerInfoSnapshot
+											    				.data
+											    				.data['name']),
+											    		trailing: Icon(
+											    			Icons.brightness_1,
+											    			color: readSnapshot
+											    				.data.documents
+											    				.length == 0 ||
+											    				readSnapshot
+											    					.data
+											    					.documents[0]
+											    					.data['buyerRead']
+											    				? Colors
+											    				.transparent
+											    				: Colors.green,
+											    			size: 15.0,),
+											    	),
+											    	onTap: () {
+											    		if (sellerName != null &&
+											    			imageURL != null)
+											    			Navigator.push(context,
+											    				MaterialPageRoute(
+											    					builder: (
+											    						context) =>
+											    						ChatScreen(
+											    							product,
+											    							_user
+											    								.documentId,
+											    							false,
+											    							sellerName,
+											    							imageURL)));
+											    	},
+											    ),
 											  ),
 											);
 										},

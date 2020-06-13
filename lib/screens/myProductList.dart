@@ -33,7 +33,7 @@ class _MyProductListState extends State<myProductList>{
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Products'),
+        title: Text('My Products',),
       ),
       body: getProductsList()
 
@@ -129,14 +129,14 @@ class _MyProductListState extends State<myProductList>{
   listProduct(String currUrl,Product ds,bool soldFlag){
 
     bool renewFlag=Timestamp.now().toDate().difference(DateTime.parse(ds.date)).inDays>=25;
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.15,
-      closeOnScroll: true,
-      secondaryActions: soldFlag==false?<Widget>[
-        Padding(
-          padding: const EdgeInsets.only(bottom:1.0),
-          child: IconSlideAction(
+    return Card(
+      elevation: 0.1,
+      child: Slidable(
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.15,
+        closeOnScroll: true,
+        secondaryActions: soldFlag==false?<Widget>[
+          IconSlideAction(
               caption: 'Edit',
               color: Colors.grey[300]	,
               icon: Icons.edit,
@@ -144,10 +144,7 @@ class _MyProductListState extends State<myProductList>{
                 Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EditProduct(_user, ds)));
               }
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom:1.0),
-          child: IconSlideAction(
+          IconSlideAction(
               caption: 'Delete',
               color: Colors.red[400]	,
               icon: Icons.delete,
@@ -155,10 +152,7 @@ class _MyProductListState extends State<myProductList>{
                 return deleteDialog(context,ds);
               }
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom:1.0),
-          child: IconSlideAction(
+          IconSlideAction(
               caption: 'Sold',
               color: Colors.green[400]	,
               icon: Icons.check,
@@ -166,13 +160,10 @@ class _MyProductListState extends State<myProductList>{
                 return soldDialog(context,ds);
               }
           ),
-        ),
 
-      ]:
-      <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(bottom:1.0),
-          child: IconSlideAction(
+        ]:
+        <Widget>[
+          IconSlideAction(
               caption: 'Sold',
               color: Colors.green[400]	,
               icon: Icons.check,
@@ -181,11 +172,7 @@ class _MyProductListState extends State<myProductList>{
 //              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Your Product is Sold')));
               }
           ),
-        ),
-      ],
-      child: Card(
-//        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        elevation: 0.05,
+        ],
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[

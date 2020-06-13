@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_animated/auto_animated.dart';
+import 'package:carousel_pro/carousel_pro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -10,8 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_group_sliver/flutter_group_sliver.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/cart.dart';
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
 	FirebaseMessaging _fcm = FirebaseMessaging();
 
 	String token;
-
+	GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 	void initState() {
 		super.initState();
@@ -69,43 +73,115 @@ class _HomeState extends State<Home> {
 		getToken();
 	}
 
+
 	@override
 	Widget build(BuildContext context) {
-		return Scaffold(
-//			backgroundColor: Colors.white,
-			appBar: AppBar (
-//				backgroundColor: Colors.cyan,
-				title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 22.0),),
-//				centerTitle: true,
-        actions: <Widget>[
-        	IconButton(
-						icon: Icon(Icons.search),
-						onPressed: (){
-								showSearch(context: context, delegate:SearchBar(_user) );
-						},
-					),
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-//                  Navigator.pop(context);
-                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
-                },
-                child: Icon(
-                  Icons.shopping_cart,
-                  size: 26.0,
-                ),
-              )
+		Widget image_slider=new Container(
+			height: MediaQuery.of(context).size.height*0.2,
+
+			child:Carousel(
+				boxFit: BoxFit.cover,
+				dotSize: 4.0,
+				indicatorBgPadding: 0.0,
+				dotBgColor: Colors.transparent,
+				overlayShadow: true,
+				overlayShadowColors: Colors.red,
+				animationCurve: Curves.fastOutSlowIn,
+				images:[
+					Container(
+              decoration: BoxDecoration(
+//							color: Colors.lightBlue,
+							borderRadius: BorderRadius.all(Radius.circular(10))
+					    ),
+              height:100,
+              width:100,
+//              child:Image.asset('assets/images/slider_1.png'),
+						child:Image.asset('assets/images/slider_2.png',fit: BoxFit.fitWidth,),
           ),
-        ],
+					Container(decoration: BoxDecoration(
+//							color: Colors.blueAccent,
+							borderRadius: BorderRadius.all(Radius.circular(10))
+					),height:100,width:100,
+						child:Image.asset('assets/images/slider_1.png',fit: BoxFit.fitWidth,),),
+				],
+				animationDuration: Duration(milliseconds: 2000),
 
 			),
+		);
+		return Scaffold(
+//			backgroundColor: Colors.white,
+			key: _scaffoldKey,
+//			appBar: AppBar (
+//				backgroundColor: Color(int.parse('#0288D1'.replaceAll('#', '0xff'))),
+//				elevation: 0.1,
+//				title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 28.0),),
+//				centerTitle: true,
+//
+//				flexibleSpace: Stack(children: <Widget>[
+//					ListView(children: <Widget>[
+//						SizedBox(height: 10.0),
+//						Text('',
+//								textAlign: TextAlign.center,
+//								style: TextStyle(color: Colors.white, fontSize: 25.0)),
+//						SizedBox(height: 25.0),
+//						Container(
+//
+//							padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0,10.0),
+//							color:Color(int.parse('#0288D1'.replaceAll('#', '0xff'))) ,
+//							child: Container(
+//								padding: EdgeInsets.symmetric(horizontal: 24),
+//								height: 45,
+//								decoration: BoxDecoration(
+//										color: Color(0xffEFEFEF),
+//										borderRadius: BorderRadius.circular(14)
+//								),
+//								child: InkWell(
+//									onTap: (){
+//										showSearch(context: context, delegate:SearchBar(_user) );
+//									},
+//									child: Row(
+//										children: <Widget>[
+//											Icon(Icons.search),
+//											SizedBox(width: 10,),
+//											Text("Search", style: TextStyle(
+//													color: Colors.grey,
+//													fontSize: 19
+//											),)
+//										],
+//									),
+//								),
+//							),
+//						),
+//					])
+//				]),
+//
+//        actions: <Widget>[
+//          Padding(
+//              padding: EdgeInsets.only(right: 20.0),
+//              child: GestureDetector(
+//                onTap: () {
+////                  Navigator.pop(context);
+//                  Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
+//                },
+//                child: Icon(
+//                  Icons.shopping_cart,
+//                  size: 26.0,
+//                ),
+//              )
+//          ),
+//        ],
+//
+//			),
 			drawer: Drawer(
 				child: ListView(
 					children: <Widget>[
 						UserAccountsDrawerHeader(
-							accountEmail: Text(_user.email,style: TextStyle(color: Colors.white),),
-							accountName: Text(_user.name,style: TextStyle(color: Colors.white),),
+//							decoration: BoxDecoration(
+//								color: Colors.white70,
+//							),
+
+							accountEmail: Text(_user.email,style: TextStyle(color: Colors.white70),),
+							accountName: Text(_user.name,style: TextStyle(color: Colors.white70),),
 							currentAccountPicture: Container(
 //								child: Image.network(userDetails.photoUrl),
 								decoration: _user.photoUrl==null?BoxDecoration():BoxDecoration(
@@ -119,7 +195,7 @@ class _HomeState extends State<Home> {
 						),
 
             ListTile(
-              leading: Icon(Icons.assignment_turned_in),
+              leading: Icon(Icons.assignment_turned_in,),
               title: Text('My Products'),
               onTap: () {
 								Navigator.pop(context);
@@ -127,7 +203,7 @@ class _HomeState extends State<Home> {
               },
             ),
 						ListTile(
-							leading: Icon(Icons.shopping_cart),
+							leading: Icon(Icons.shopping_cart,),
 							title: Text('Cart'),
 							onTap: () {
 								Navigator.pop(context);
@@ -135,7 +211,7 @@ class _HomeState extends State<Home> {
 							},
 						),
             ListTile(
-              leading: Icon(Icons.call_made),
+              leading: Icon(Icons.call_made,),
               title: Text('Promote'),
               onTap: () {
                 Navigator.pop(context);
@@ -181,49 +257,161 @@ class _HomeState extends State<Home> {
 				body:	Container(
 						height:screenHeight(context),
 						width:screenWidth(context),
-//						color: Colors.grey[200],
+//						color: Colors.white,
 						child:CustomScrollView(
 								slivers:<Widget>[
-									SliverToBoxAdapter(
-										child: ListTile(
-											leading: Icon(Icons.apps),
-												title:Text("Category",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
-
+									SliverAppBar(
+											expandedHeight: 140.0,
+											backgroundColor:Color(int.parse('#0288D1'.replaceAll('#', '0xff'))),
+											title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 28.0),),
+											centerTitle: true,
+											leading: IconButton(
+													icon: Icon(LineIcons.navicon, color: Colors.white),
+													onPressed: () {
+														_scaffoldKey.currentState.openDrawer();
+													}
 											),
+											floating: true,
+											pinned: true,
+											flexibleSpace: Stack(children: <Widget>[
+												ListView(children: <Widget>[
+													SizedBox(height: 10.0),
+													Text('',
+															textAlign: TextAlign.center,
+															style: TextStyle(color: Colors.white, fontSize: 25.0)),
+													SizedBox(height: 25.0),
+													Container(
+
+														padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0,10.0),
+														color:Color(int.parse('#0288D1'.replaceAll('#', '0xff'))) ,
+														child: Container(
+															padding: EdgeInsets.symmetric(horizontal: 24),
+															height: 45,
+															decoration: BoxDecoration(
+																	color: Color(0xffEFEFEF),
+																	borderRadius: BorderRadius.circular(14)
+															),
+															child: InkWell(
+																onTap: (){
+																	showSearch(context: context, delegate:SearchBar(_user) );
+																},
+																child: Row(
+																	children: <Widget>[
+																		Icon(Icons.search),
+																		SizedBox(width: 10,),
+																		Text("Search", style: TextStyle(
+																				color: Colors.grey,
+																				fontSize: 19
+																		),)
+																	],
+																),
+															),
+														),
+													),
+												])
+											]),
+										actions: <Widget>[
+											Padding(
+													padding: EdgeInsets.only(right: 20.0),
+													child: GestureDetector(
+														onTap: () {
+															Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
+														},
+														child: Icon(
+															LineIcons.shopping_cart,
+															size: 26.0,
+														),
+													)
+											),
+										],
+									),
+
+									SliverToBoxAdapter(
+										child: Container(
+											color: Colors.white,
+										  child: ListTile(
+//										  	leading: Icon(Icons.apps),
+										  		title:Text("Category",style: TextStyle(fontSize: 18,color: Colors.black87.withOpacity(0.7),fontWeight: FontWeight.w500),),
+
+										  	),
+										),
 
 									),
 
-										SliverPadding(
-												padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
-												sliver: _categoryData(context),
+//										SliverPadding(
+//												padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
+//												sliver: _categoryData(context),
+//										),
+
+									SliverGroupBuilder(
+										decoration: BoxDecoration(
+											color: Colors.white,
+//												borderRadius: BorderRadius.all(Radius.circular(2)),
+//												border: Border.all(color: Color.fromRGBO(238, 237, 238, 1))
 										),
 
+
+										child:SliverPadding(
+											padding: EdgeInsets.symmetric(vertical: 5.0,horizontal: 20.0),
+											sliver: _categoryData(context),
+										),
+									),
 									SliverToBoxAdapter(
 										child: Padding(
-										  padding: EdgeInsets.symmetric(horizontal:0.0),
-											child: ListTile(
-												leading: Icon(Icons.home),
-												title:Text("Shop",style: TextStyle(fontSize: 18,color: Colors.black45,fontWeight: FontWeight.w500),),
+										  padding: const EdgeInsets.all(8.0),
+										  child: Container(
+//											color: Colors.white,
 
-											),
+										  	child: image_slider
+										  ),
 										),
 
 									),
+									SliverToBoxAdapter(
 
-									SliverPadding(
+                    child: Container(
+//                        color: Colors.white,
+												height:50.0,
+                        margin: EdgeInsets.symmetric(horizontal:10.0,vertical: 2.0),
+                        decoration: BoxDecoration(
+                          color: Color(int.parse('#94C4F4'.replaceAll('#', '0xff'))) ,
+												borderRadius: BorderRadius.all(Radius.circular(10)),
+												
+                        ),
+												child:Image.asset('assets/images/r1.png',fit: BoxFit.fitHeight,),
+//                      child: ListTile(
+//                        title:Text("Recommended For You",style: TextStyle(fontSize: 18,color: Colors.black87,fontWeight: FontWeight.w500),),
+//
+//                      )
+                    ),
+
+									),
+
+//									SliverPadding(
+//										padding: EdgeInsets.only(top: 0.0),
+//										sliver: _productList(),
+//									),
+									SliverGroupBuilder(
+										decoration: BoxDecoration(
+//											color: Colors.grey[100],
+//												borderRadius: BorderRadius.all(Radius.circular(2)),
+//												border: Border.all(color: Color.fromRGBO(238, 237, 238, 1))
+										),
+										child:SliverPadding(
 										padding: EdgeInsets.only(top: 0.0),
 										sliver: _productList(),
+									),
 									),
 
 								]
 						)
 				),
+
 				floatingActionButton: FloatingActionButton(
 //					backgroundColor: Colors.blue,
 					onPressed: () {
 //						Navigator.push(context,SlideBottomRoute( page:ChooseCategory( _user)));
 						Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ChooseCategory(_user)));
-//					 	  successDialog(context);
 					},
 //					child: Icon(Icons.add,color: Colors.white,),
 						child: Text("SELL",style: TextStyle(
@@ -251,11 +439,12 @@ class _HomeState extends State<Home> {
 				child: Container(
 //					color: Colors.lightBlueAccent,
 					decoration: BoxDecoration(
-						color: Colors.white,
-						border: Border.all(color: Colors.grey,width: 0.1),
-						borderRadius: BorderRadius.all(
-								Radius.circular(10.0) //                 <--- border radius here
-						),
+//						color: Colors.red,
+
+//						border: Border.all(color: Colors.grey,width: 0.1),
+//						borderRadius: BorderRadius.all(
+//								Radius.circular(10.0) //                 <--- border radius here
+//						),
 
 					),
 
@@ -264,7 +453,7 @@ class _HomeState extends State<Home> {
 						crossAxisAlignment: CrossAxisAlignment.center,
 						children: <Widget>[
 							SizedBox(
-								height: screenHeight(context)/20,
+								height: screenHeight(context)/15,
 								child:Center(
 //																	color:Colors.blueGrey,
 									child: networkImageWithoutHeightConstraint(iconUrl),
@@ -278,9 +467,9 @@ class _HomeState extends State<Home> {
 							  	height: screenHeight(context)/30,
 //							  	child:Text("Study Material1",maxLines:3),
 //									child:Text(name,maxLines:3),
-//										child: autoSizeText("Study Material1233333333333333", 2)
-										child: autoSizeText(name, 2)
-//								child:Expanded(child: autoSizeText(name, 1, 10.0, Colors.black87)),
+//										child: autoSizeText('Study Material1233333333333333', 2,15.0)
+//										child: autoSizeText(name, 3,13.0,Colors.black54)
+									child:autoSizeText(name, 2, 15.0, Colors.black54)
 							  ),
 							),
 						],
@@ -304,6 +493,8 @@ class _HomeState extends State<Home> {
 		prefs.setString('storePhoto', _user.photoUrl);
 	}
 
+	final scrollController = ScrollController();
+//	final Delay listShowItemDuration = Duration(milliseconds: 250);
 	Widget _categoryData(BuildContext context){
 
 		return StreamBuilder<QuerySnapshot>(
@@ -328,13 +519,53 @@ class _HomeState extends State<Home> {
 				  }
 
 				return SliverGrid(
-//					gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount:3),
-				gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-					childAspectRatio: 0.9,
+
+//					controller: scrollController,
+//					delay: Duration(milliseconds: 250),
+//					itemCount: snapshot.hasData ? snapshot.data.documents.length : 0,
+//					gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+//							childAspectRatio: 0.9,
+//							maxCrossAxisExtent: 100.0,
+//							mainAxisSpacing: 0.5,
+//							crossAxisSpacing: 0.5,
+//					),
+//				itemBuilder:(BuildContext context, int index, Animation<double> animation,){
+//					DocumentSnapshot ds = snapshot.data.documents[index];
+//							return FadeTransition(
+//								opacity: Tween<double>(begin: 0, end: 1,).animate(animation),
+//							// And slide transition
+//								child: SlideTransition(
+//									position: Tween<Offset>(
+//									begin: Offset(0, -0.1),
+//									end: Offset.zero,
+//									).animate(animation),
+//								// Paste you Widget
+//									child: FutureBuilder<dynamic> (
+//										future: FirebaseStorage.instance.ref().child('categoryIcon').child(ds['name']+'.png').getDownloadURL(),
+//										builder: (BuildContext context,AsyncSnapshot<dynamic> asyncSnapshot) {
+//											String iconUrl=asyncSnapshot.data.toString();
+//											//print(iconUrl+"*");
+//											if(iconUrl=='null')
+//												return Padding(
+//													padding: const EdgeInsets.all(8.0),
+//													child: shimmerCategory(context,screenHeight(context)/20,screenWidth(context)/5),
+//												);
+//											return Card(
+//													elevation: 0.0,
+//													child:headerCategoryItem(ds['name'],iconUrl, snapshot.data.documents[index].documentID.toString()),
+//											);
+//										},
+//									),
+//								),
+//							);
+//				},
+
+					gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+						childAspectRatio: 0.9,
 						maxCrossAxisExtent: 100.0,
-						mainAxisSpacing: 10.0,
-						crossAxisSpacing: 10.0,
-				),
+						mainAxisSpacing: 0.5,
+						crossAxisSpacing: 0.5,
+					),
 					delegate: SliverChildBuilderDelegate((BuildContext context, int index){
 						DocumentSnapshot ds = snapshot.data.documents[index];
 						//print(ds['iconId']);
@@ -346,7 +577,8 @@ class _HomeState extends State<Home> {
 								if(iconUrl=='null')
 									return Padding(
 										padding: const EdgeInsets.all(8.0),
-										child: shimmerCategory(context,screenHeight(context)/20,screenWidth(context)/5),
+										child: shimmerCategory(context,screenHeight(context)/15,screenWidth(context)/5),
+//											child:Container()
 									);
 								return Card(
 										elevation: 0.0,
@@ -416,16 +648,18 @@ class _HomeState extends State<Home> {
 											onTap: (){Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>ProductDetail(product.productId, _user))); },
 											child:new Card(
 												shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-												elevation: 0.3,
+												elevation: 0.0,
 												child: Column(
 													mainAxisSize: MainAxisSize.min,
 													mainAxisAlignment: MainAxisAlignment.center,
 													children: <Widget>[
-														Padding(
+														Container(
 														  padding: EdgeInsets.only(bottom:8.0),
+
+//															child: networkImageHeightWidth(currUrl,screenHeight(context)/4.5,screenWidth(context)/2.5),
 														  child: ClipRRect(
 														  	borderRadius: BorderRadius.circular(8.0),
-														    child: networkImage(currUrl,screenHeight(context)/5),
+														    child: networkImageHeightWidth(currUrl,screenHeight(context)/4.5,screenWidth(context)/2.5),
 														  ),
 														),
 
@@ -465,7 +699,7 @@ class _HomeState extends State<Home> {
 
 														],
 													),
-														
+
 
 													],
 												),
@@ -573,16 +807,17 @@ class SearchBar extends SearchDelegate<String>{
 	ThemeData appBarTheme(BuildContext context) {
 		assert(context != null);
 		final ThemeData theme = Theme.of(context);
+
 		assert(theme != null);
 		return theme.copyWith(
+
 			primaryColor: Colors.white,
-			primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.cyan),
+			primaryIconTheme: theme.primaryIconTheme.copyWith(color: Colors.cyan[700]),
 			primaryColorBrightness: Brightness.light,
 			textTheme: theme.textTheme.copyWith(
 					title: TextStyle(fontWeight: FontWeight.normal,fontSize: 18.0)),
-
-
 		);
+
 
 	}
   @override

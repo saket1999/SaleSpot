@@ -51,20 +51,20 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-//        primarySwatch: MaterialColor( 0xFF000000,
-//          const <int, Color>{
-//            50: const Color(0xFF000000),
-//            100: const Color(0xFF000000),
-//            200: const Color(0xFF000000),
-//            300: const Color(0xFF000000),
-//            400: const Color(0xFF000000),
-//            500: const Color(0xFF000000),
-//            600: const Color(0xFF000000),
-//            700: const Color(0xFF000000),
-//            800: const Color(0xFF000000),
-//            900: const Color(0xFF000000),
-//          },),
-      primarySwatch: Colors.cyan,
+        primarySwatch: MaterialColor( 0xFF0288D1,
+          const <int, Color>{
+            50: const Color(0xFF0288D1),
+            100: const Color(0xFF0288D1),
+            200: const Color(0xFF0288D1),
+            300: const Color(0xFF0288D1),
+            400: const Color(0xFF0288D1),
+            500: const Color(0xFF0288D1),
+            600: const Color(0xFF0288D1),
+            700: const Color(0xFF0288D1),
+            800: const Color(0xFF0288D1),
+            900: const Color(0xFF0288D1),
+          },),
+//      primarySwatch: MaterialColor(0xFF0288D1,const <int, Color>{}),
           primaryTextTheme: TextTheme(
               title: TextStyle(
                   color: Colors.white

@@ -17,6 +17,21 @@ Widget shimmerImage(context,double h){
   );
 
 }
+Widget shimmerImageHeightWidth(context,double h,double w){
+  return Center(
+      child:Shimmer.fromColors(
+        direction: ShimmerDirection.ltr,
+        baseColor: Colors.grey[200],
+        highlightColor: Colors.grey[100],
+        child:Container(
+          height: h,
+          width:w,
+          color: Colors.white,
+        ),
+      )
+  );
+
+}
 Widget shimmerItemHorizontal(context,double h,double w){
   return Center(
       child:Shimmer.fromColors(
@@ -69,13 +84,13 @@ Widget shimmerCategory(context,double h,double w){
           children: <Widget>[
             Container(
               height: h,
-              color: Colors.white,
+
+              decoration:BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              )
             ),
-            Container(
-              width:w/2,
-              height: h/6,
-              color: Colors.white,
-            ),
+
 
 
           ],

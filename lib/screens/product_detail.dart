@@ -3,12 +3,15 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/chatScreen.dart';
 import 'package:sale_spot/screens/imageHero.dart';
 import 'package:sale_spot/services/toast.dart';
+
+import 'cart.dart';
 class ProductDetail extends StatefulWidget {
   final String _documentId;
   final User _user;
@@ -45,20 +48,25 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget build(BuildContext context) {
     pageController=PageController(initialPage: 1,viewportFraction: 0.8);
     image_slider=new Container(
+      color: Color(int.parse('0xffececec')),
       height: MediaQuery.of(context).size.height*0.5,
       child:Carousel(
               boxFit:BoxFit.cover,
+              dotSize: 4.0,
+              dotVerticalPadding: 20.0,
+              indicatorBgPadding: 0.0,
               dotBgColor: Colors.transparent,
-              dotColor: Colors.grey,
-              dotIncreasedColor: Colors.grey,
               overlayShadow: true,
+              dotColor: Colors.white,
+              dotIncreasedColor: Colors.white,
+
               overlayShadowColors: Colors.red,
               images:imagesHero,
               autoplay: false,
               animationCurve: Curves.fastOutSlowIn,
               animationDuration: Duration(milliseconds: 1000),
-              dotSize: 4.0,
-              indicatorBgPadding: 0.0,
+
+
               onImageTap: (int value){
                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ImageHero(images,tags)));
               },
@@ -77,8 +85,6 @@ class _ProductDetailState extends State<ProductDetail> {
                 future: _imageLoader,
                 builder:(BuildContext context, AsyncSnapshot snapshot){
                   if(snapshot.hasData){
-//              print(snapshot.data.data.toString()+"jkbgfdb");
-//              _productContent=Product.fromMapObject(snapshot.data.data);
                     return new ListView(
 //                      physics: NeverScrollableScrollPhysics(),
 //                      shrinkWrap: true,
@@ -98,11 +104,7 @@ class _ProductDetailState extends State<ProductDetail> {
                                 SizedBox(height: 10.0),
                                 _buildPriceWidgets(),
 
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical:8.0),
-                                  child: Divider(thickness: 2,color: Colors.grey[200],),
-                                ),
-                                _buildSellerInfo(),
+
 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical:8.0),
@@ -110,6 +112,11 @@ class _ProductDetailState extends State<ProductDetail> {
                                 ),
 
                                 _buildDetailWidgets(),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical:8.0),
+                                  child: Divider(thickness: 2,color: Colors.grey[200],),
+                                ),
+                                _buildSellerInfo(),
 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical:8.0),
@@ -150,6 +157,7 @@ class _ProductDetailState extends State<ProductDetail> {
                     )
                 ),
                 child:Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.close,
@@ -159,6 +167,17 @@ class _ProductDetailState extends State<ProductDetail> {
                       onPressed: () {
                         setState(() {
                           Navigator.pop(context);
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(LineIcons.shopping_cart,
+                          color: Colors.white70,
+                          size:30
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Cart(_user)));
                         });
                       },
                     ),
@@ -173,7 +192,8 @@ class _ProductDetailState extends State<ProductDetail> {
           elevation: 7.0,
           color: Colors.white,
           child:Container(
-              height: 50.0,
+              margin:EdgeInsets.only(left:4.0,right:4.0,bottom: 2.0),
+              height: screenHeight(context)/15,
               width: MediaQuery.of(context).size.width,
               color: myProduct?Colors.grey:Colors.white,
               child: Row(
@@ -188,26 +208,30 @@ class _ProductDetailState extends State<ProductDetail> {
 //                        color: myProduct?Colors.grey:Colors.white,
                         child: Icon(
                           Icons.chat,
-                          color: myProduct?Colors.black:Colors.grey,
+                          color: myProduct?Colors.black:Color(int.parse('0xff0288D1')).withOpacity(0.8),
                         ),
                       ),
                     ),
 
                     Container(
-                        color: (cartNotAdded&&!myProduct)?Colors.blue:Colors.grey,
+                        decoration:BoxDecoration(
+
+                          borderRadius:BorderRadius.circular(10),
+                          color: (cartNotAdded&&!myProduct)?Color(int.parse('0xff0288D1')).withOpacity(0.8):Colors.grey,
+                        ),
+
                         width: MediaQuery.of(context).size.width - 130.0,
                         child: Center(
                             child: GestureDetector(
                               child: Text(
                                 'Add to Cart',
                                 style: TextStyle(
-                                    fontFamily: 'Montserrat',
                                     fontSize: 18.0,
-                                    color: (cartNotAdded&&!myProduct)?Colors.white:Colors.black,
+                                    color: (cartNotAdded&&!myProduct)?Colors.white:Colors.white,
                                     fontWeight: FontWeight.bold
                                 ),
                               ),
-                              onTap: (cartNotAdded&&!myProduct)?addToCart:null,
+                              onTap: (cartNotAdded&&!myProduct)?addToCart:(){toast("Already added to cart");},
                             )
                         )
                     )
@@ -221,29 +245,18 @@ class _ProductDetailState extends State<ProductDetail> {
   _buildSellerInfo()
   {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 12.0),
+        margin: EdgeInsets.symmetric(horizontal: 2.0),
 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-
           children: <Widget>[
 
             Text(
-              "Seller Location",
+              "Seller Address",
               style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight: FontWeight.w400),
             ),
             SizedBox(height: 15.0),
-//            Padding(
-//              padding: const EdgeInsets.fromLTRB(0.0,8.0,0.0,0.0),
-//              child: Text(
-//                _productContent.details,
-//                style: TextStyle(
-//                    fontFamily: 'Montserrat',
-//                    fontSize: 15.0,
-//                    color: Colors.black87
-//                ),
-//              ),
-//            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -349,11 +362,11 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
           SizedBox(height: 10.0),
           Padding(
-            padding: const EdgeInsets.fromLTRB(0.0,8.0,0.0,0.0),
+            padding: const EdgeInsets.fromLTRB(5.0,8.0,0.0,0.0),
             child: Text(
               _productContent.details,
               style: TextStyle(
-                  fontFamily: 'Montserrat',
+
                   fontSize: 15.0,
                   color: Colors.black87
               ),
@@ -370,7 +383,7 @@ class _ProductDetailState extends State<ProductDetail> {
         child: Text(
           //name,
           _productContent.title,
-          style: TextStyle(fontSize: 18.0, color: Colors.black,fontWeight:FontWeight.w500),
+          style: TextStyle(fontSize: 20.0, color: Colors.black,fontWeight:FontWeight.w500),
         ),
 
 
@@ -411,6 +424,7 @@ class _ProductDetailState extends State<ProductDetail> {
             style: TextStyle(
               fontSize: 19.0,
               color: Colors.grey,
+
               decoration: TextDecoration.lineThrough,
             ),
           ),
@@ -421,6 +435,7 @@ class _ProductDetailState extends State<ProductDetail> {
             discountPercentage,
             style: TextStyle(
               fontSize: 18.0,
+              backgroundColor: Colors.green[100],
               color: Colors.green[700],
             ),
           ),

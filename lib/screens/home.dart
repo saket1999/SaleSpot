@@ -262,7 +262,7 @@ class _HomeState extends State<Home> {
 								slivers:<Widget>[
 									SliverAppBar(
 											expandedHeight: 140.0,
-											backgroundColor:Color(int.parse('#0288D1'.replaceAll('#', '0xff'))),
+											backgroundColor:Color(int.parse('0xff0288D1')),
 											title: new Text("SaleSpot",style:TextStyle(letterSpacing: 1.0,fontSize: 28.0),),
 											centerTitle: true,
 											leading: IconButton(

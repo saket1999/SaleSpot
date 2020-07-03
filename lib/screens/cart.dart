@@ -8,6 +8,7 @@ import 'package:sale_spot/classes/product.dart';
 import 'package:sale_spot/classes/user.dart';
 import 'package:sale_spot/screens/chatScreen.dart';
 import 'package:sale_spot/screens/product_detail.dart';
+import 'package:sale_spot/services/shimmerLayout.dart';
 import 'package:sale_spot/services/toast.dart';
 
 import 'chooseCategory.dart';
@@ -162,32 +163,16 @@ class _CartState extends State<Cart> {
 											    									_user)));
 											    			},
 											    			child: FutureBuilder(
-											    				future: FirebaseStorage
-											    					.instance
-											    					.ref()
-											    					.child(
-											    					product
-											    						.productId +
-											    						'1')
-											    					.getDownloadURL(),
-											    				builder: (
-											    					BuildContext context,
-											    					AsyncSnapshot<
-											    						dynamic> downloadUrl) {
-											    					if (!downloadUrl
-											    						.hasData)
-											    						return networkImageWithoutHeightConstraint(
-											    							'https://camo.githubusercontent.com/f5819c1f163c1265924b27bd0c3cc3e9a7776cef/68747470733a2f2f73332e65752d63656e7472616c2d312e616d617a6f6e6177732e636f6d2f626572736c696e672f696d616765732f7370696e6e6572332e676966');
-
-											    					imageURL =
-											    						downloadUrl
-											    							.data;
+																	future: FirebaseStorage.instance.ref().child(product.productId + '1').getDownloadURL(),
+											    				builder: (BuildContext context, AsyncSnapshot<dynamic> downloadUrl) {
+											    					if (!downloadUrl.hasData)
+																			return CircleAvatar(
+																					radius: 30,
+																					backgroundColor: Colors.grey[100],);
+											    					imageURL = downloadUrl.data;
 											    					return CircleAvatar(
 											    						radius: 30,
-											    						backgroundImage: NetworkImage(
-											    							downloadUrl
-											    								.data)
-											    					);
+											    						backgroundImage: NetworkImage(downloadUrl.data));
 //																return networkImageWithoutHeightConstraint(downloadUrl.data);
 											    				},
 											    			),

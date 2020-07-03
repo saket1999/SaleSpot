@@ -75,27 +75,27 @@ Widget shimmerItemHorizontal(context,double h,double w){
 }
 Widget shimmerCategory(context,double h,double w){
   return Center(
-      child:Shimmer.fromColors(
-        direction: ShimmerDirection.ltr,
-        baseColor: Colors.grey[200],
-        highlightColor: Colors.grey[100],
-        child:Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Container(
-              height: h,
+    child: Shimmer.fromColors(
+      direction: ShimmerDirection.ltr,
+      baseColor: Colors.grey[200],
+      highlightColor: Colors.grey[100],
+      child:Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Container(
+            height: h,
 
-              decoration:BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              )
-            ),
+            decoration:BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            )
+          ),
 
 
 
-          ],
-        ),
-      )
+        ],
+      ),
+    ),
   );
 
 }

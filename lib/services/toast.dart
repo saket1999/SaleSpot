@@ -9,7 +9,7 @@ void toast(String message) {
 		msg: message,
 		toastLength: Toast.LENGTH_SHORT,
 		gravity: ToastGravity.BOTTOM,
-		backgroundColor: Colors.black,
+		backgroundColor: Colors.black54,
 		textColor: Colors.white,
 		fontSize: 10.0
 	);

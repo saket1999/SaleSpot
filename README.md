@@ -1,6 +1,6 @@
-# salespot
+# SaleSpot
 
-A new Flutter application.
+A complete ecommerce solution to buy and sell goods
 
 ## Getting Started
 

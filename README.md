@@ -1,6 +1,6 @@
 # SaleSpot
 
-A complete ecommerce solution to buy and sell goods
+A complete E-commerce solution to buy and sell goods.
 
 ## Getting Started
 
